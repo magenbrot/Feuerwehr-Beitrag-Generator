@@ -7,7 +7,9 @@
 
 Erstelle ein Social Media Post für Facebook und Instagram für deine Feuerwehr in Sekunden. Dieser Fork ist angepasst für die Freiwillige Feuerwehr Werdau.
 
-Website: [112.ovtec.it](https://112.ovtec.it/)
+Demo-Website: [112.ovtec.it](https://112.ovtec.it/)
+
+Forked from [Turbopixel](https://github.com/turbopixel/Feuerwehr-Beitrag-Generator)
 
 ## vite Konfiguration
 
