@@ -17,11 +17,6 @@ jobs:
         with:
           fetch-depth: 0 # fetch all tags
 
-      - name: Setup GitHub CLI
-        uses: cli/gh-cli@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Configure git
         run: |
           git config user.name "Workflow cleanup-releases.yml"
