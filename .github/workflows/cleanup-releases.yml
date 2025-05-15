@@ -1,0 +1,74 @@
+name: Delete old tags and releases - keep the latest 10
+
+on:
+  schedule:
+    - cron: '30 2 * * Mon'
+  workflow_dispatch:
+
+jobs:
+  delete_old:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # fetch all tags
+
+      - name: Setup GitHub CLI
+        uses: cli/gh-cli@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "Workflow cleanup-releases.yml"
+          git config user.email "github-actions@github.com"
+
+      - name: Delete old tags and releases, keep the latest 10
+        run: |
+          KEEP_LATEST=10
+
+          echo "Search for tags older than the latest ${KEEP_LATEST}."
+
+          # fetch a sorted list of all tags (newest first) and put them into an array
+          mapfile -t LATEST_TAG_NAMES_TO_KEEP < <(git for-each-ref --format '%(refname:short) %(taggerdate:unix)' refs/tags | sort -k 2,2n -r | head -n "${KEEP_LATEST}" | awk '{print $1}')
+
+          echo "I will keep the latest ${KEEP_LATEST} tags:"
+          printf '%s\n' "${LATEST_TAG_NAMES_TO_KEEP[@]}"
+
+          echo "Searching for tags to delete (all except the latest ${KEEP_LATEST})."
+
+          # Get all tag names again (sorted oldest first for processing, although order doesn't strictly matter here)
+          git for-each-ref --sort=taggerdate --format '%(refname:short)' refs/tags |
+          while read -r tag_name; do
+            # Check if the current tag is in the list of latest tags to keep
+            IS_LATEST=false
+            # Loop through the array of tags to keep
+            for latest_tag in "${LATEST_TAG_NAMES_TO_KEEP[@]}"; do
+              if [[ "$tag_name" == "$latest_tag" ]]; then
+                IS_LATEST=true
+                break # Tag found, break inner loop
+              fi
+            done
+
+            # If the tag is NOT in the list of latest tags, delete it
+            if [ "$IS_LATEST" == "false" ]; then
+              echo "Attempting to delete Release and Tag: $tag_name"
+              # Use GitHub CLI to delete the Release and the associated Tag
+              # The --cleanup-tag option ensures that the Git tag is also deleted
+              # We use || true to prevent the workflow from failing,
+              # if no Release is found for the tag (the tag will still be deleted then)
+              gh release delete "$tag_name" --yes --cleanup-tag || true
+              # Fallback delete for the tag in case gh release delete failed or no release existed
+              git push origin --delete "$tag_name" || true
+            else
+              echo "Keeping latest tag: $tag_name"
+            fi
+          done
+
+          echo "Deletion process completed."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
