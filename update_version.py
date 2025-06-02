@@ -125,9 +125,9 @@ def main():
                 print("   Stderr:\n" + result.stderr.strip())
 
 
-        print("\n" + "="*30)
+        print("\n" + "="*50)
         print("Alle Schritte erfolgreich abgeschlossen!")
-        print("="*30)
+        print("="*50)
         sys.exit(0)
 
     except FileNotFoundError:
