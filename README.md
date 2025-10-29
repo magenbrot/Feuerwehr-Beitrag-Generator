@@ -33,7 +33,7 @@ Mach die notwendigen Änderungen am Code. Erzeuge auch gerne einen Pull Request 
 #### Docker image erzeugen und testen
 
 ```sh
-docker build -t <your-dockerid>/ffpostcreator .
+docker buildx build . -t magenbrot/ffpostcreator
 docker run -it -p 8080:80 --rm --name ffpostcreator <your-dockerid>/ffpostcreator:latest
 ```
 

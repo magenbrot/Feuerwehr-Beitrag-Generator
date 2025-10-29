@@ -22,6 +22,21 @@ export default {
       link: ''
     }
   },
+  watch: {
+    datum(newDateValue) {
+      if (newDateValue) {
+        const m = moment(newDateValue, "YYYY-MM-DD");
+
+        if (m.isValid()) {
+          this.$data.jahr = m.year();
+        } else {
+          this.$data.jahr = '';
+        }
+      } else {
+        this.$data.jahr = '';
+      }
+    }
+  },
   methods: {
     format_date(value) {
       if (value) {
@@ -35,10 +50,8 @@ export default {
     },
     set_heute(e) {
       // console.log(e.target.innerText)
-      // console.log(new moment().format("HH:mm"))
 
       this.$data.datum = new moment().format("YYYY-MM-DD");
-      this.$data.jahr = new moment().format("YYYY");
       this.$data.uhrzeit = new moment().format("HH:mm");
     },
     set_gestern(e) {
@@ -46,7 +59,6 @@ export default {
       // console.log(new moment().format("HH:mm"))
 
       this.$data.datum = new moment().subtract(1, "days").format("YYYY-MM-DD");
-      this.$data.jahr = new moment().format("YYYY");
       this.$data.uhrzeit = new moment().format("HH:mm");
     },
     set_dauer(e) {
@@ -149,7 +161,7 @@ export default {
         </div>
         <div class="cell is-col-start-1">
           <label for="datum" class="label">Datum</label>
-          <input type="date" v-model="datum" class="input" id="datum" @click="set_datum_uhrzeit">
+          <input type="date" v-model="datum" class="input" id="datum">
           <div class="help">
             <div class="tags">
               <span class="tag is-clickable" @click="set_heute">Heute</span>
