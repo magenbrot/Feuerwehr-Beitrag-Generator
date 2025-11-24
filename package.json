@@ -15,7 +15,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.2",
     "moment": "^2.30.1",
-    "sass": "^1.94.0",
+    "sass": "^1.94.2",
     "vite": "^7.2.4"
   }
 }
