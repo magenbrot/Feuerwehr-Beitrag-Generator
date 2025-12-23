@@ -28,12 +28,12 @@ export default {
         const m = moment(newDateValue, "YYYY-MM-DD");
 
         if (m.isValid()) {
-          this.$data.jahr = m.year();
+          this.jahr = m.year();
         } else {
-          this.$data.jahr = '';
+          this.jahr = '';
         }
       } else {
-        this.$data.jahr = '';
+        this.jahr = '';
       }
     }
   },
@@ -46,90 +46,91 @@ export default {
     set_stichwort(e) {
       // console.log(e.target.innerText)
 
-      this.$data.stichwort = e.target.innerText;
+      this.stichwort = e.target.innerText;
     },
     set_heute(e) {
       // console.log(e.target.innerText)
-
-      this.$data.datum = new moment().format("YYYY-MM-DD");
-      this.$data.uhrzeit = new moment().format("HH:mm");
+      const now = moment();
+      this.datum = now.format("YYYY-MM-DD");
+      this.uhrzeit = now.format("HH:mm");
     },
     set_gestern(e) {
       // console.log(e.target.innerText)
       // console.log(new moment().format("HH:mm"))
-
-      this.$data.datum = new moment().subtract(1, "days").format("YYYY-MM-DD");
-      this.$data.uhrzeit = new moment().format("HH:mm");
+      const yesterday = moment().subtract(1, "days");
+      this.datum = yesterday.format("YYYY-MM-DD");
+      this.uhrzeit = moment().format("HH:mm");
     },
     set_dauer(e) {
       // console.log(e.target.innerText)
 
-      this.$data.dauer = e.target.innerText;
+      this.dauer = e.target.innerText;
     },
     set_ort(e) {
       // console.log(e.target.innerText)
 
-      this.$data.ort = e.target.innerText + ", ";
+      this.ort = e.target.innerText + ", ";
     },
     set_einheiten(e) {
       // console.log(e.target.innerText)
 
-      if (this.$data.einheiten.length == 0) {
-        this.$data.einheiten = e.target.innerText;
+      if (this.einheiten.length == 0) {
+        this.einheiten = e.target.innerText;
       } else {
-        this.$data.einheiten = this.$data.einheiten + ", " + e.target.innerText
+        this.einheiten = `${this.einheiten}, ${e.target.innerText}`;
       }
     },
     set_bericht(e) {
       // console.log(e.target.innerText)
 
-      this.$data.bericht = e.target.innerText;
+      this.bericht = e.target.innerText;
     },
     set_tags(e) {
       // console.log(e.target.innerText)
 
-      this.$data.tags = this.$data.tags + " " + e.target.innerText
+      this.tags = `${this.tags} ${e.target.innerText}`;
     },
     reset_einheiten(e) {
       // console.log(e.target.innerText)
 
-      this.$data.einheiten = default_einheiten;
+      this.einheiten = default_einheiten;
     },
     reset_einsatzbericht(e) {
       // console.log(e.target.innerText)
 
-      this.$data.bericht = "";
+      this.bericht = "";
     },
     reset_tags(e) {
       // console.log(e.target.innerText)
 
-      this.$data.tags = default_tags;
+      this.tags = default_tags;
     },
     create_example() {
-      this.$data.nummer = "42";
-      this.$data.datum = new moment().startOf('month').format("YYYY-MM-DD");
-      this.$data.jahr = new moment().format("YYYY");
-      this.$data.uhrzeit = new moment().format("HH:mm");
-      this.$data.dauer = "1 Stunde";
-      this.$data.stichwort = "TMR-1 Türnotöffnung";
-      this.$data.ort = "Werdau, Bertolt-Brecht-Straße 18";
-      this.$data.einheiten = default_einheiten + ", Rettungsdienst, Polizei";
-      this.$data.bericht = 'Das ist ein Beispiel Einsatzbericht.';
-      this.$data.tags = default_tags;
-      this.$data.link = 'https://www.feuerwehr-werdau.de/';
+      const now = moment();
+      this.nummer = "42";
+      this.datum = now.startOf('month').format("YYYY-MM-DD");
+      this.jahr = now.format("YYYY");
+      this.uhrzeit = now.format("HH:mm");
+      this.dauer = "1 Stunde";
+      this.stichwort = "TMR-1 Türnotöffnung";
+      this.ort = "Werdau, Bertolt-Brecht-Straße 18";
+      this.einheiten = `${default_einheiten}, Rettungsdienst, Polizei`;
+      this.bericht = 'Das ist ein Beispiel Einsatzbericht.';
+      this.tags = default_tags;
+      this.link = 'https://www.feuerwehr-werdau.de/';
     },
     clear_form() {
-      this.$data.nummer = '';
-      this.$data.datum = '';
-      this.$data.jahr = '';
-      this.$data.uhrzeit = '';
-      this.$data.dauer = '';
-      this.$data.stichwort = '';
-      this.$data.ort = '';
-      this.$data.einheiten = default_einheiten;
-      this.$data.bericht = '';
-      this.$data.tags = default_tags;
-      this.$data.link = '';
+      this.nummer = '';
+      this.datum = '';
+      this.jahr = '';
+      this.uhrzeit = '';
+      this.dauer = '';
+      this.stichwort = '';
+      this.ort = '';
+      this.einheiten = default_einheiten;
+      this.bericht = '';
+      this.tags = default_tags;
+      this.link = '';
     }
   }
 };

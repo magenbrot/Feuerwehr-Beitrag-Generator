@@ -1,12 +1,11 @@
 <script>
 import LayoutStart from "./components/LayoutStart.vue";
 import LayoutForm from "./components/LayoutForm.vue";
-import moment from 'moment';
 
 
 const version = import.meta.env.VITE_APP_VERSION;
 console.log('Version:', version);
-const copyright_year = moment().year();
+const copyright_year = new Date().getFullYear();
 
 export default {
   components: {LayoutForm, LayoutStart},
@@ -32,9 +31,9 @@ export default {
       <h1 class="title is-2">Feuerwehr Beitrag Generator</h1>
       <h2 class="subtitle is-5">Für Social Media Posts</h2>
 
-      <div v-if="this.$data.started === false">
+      <div v-if="started === false">
         <LayoutStart/>
-        <button class="button is-success" @click="this.$data.started = true">Post erstellen</button>
+        <button class="button is-success" @click="started = true">Post erstellen</button>
       </div>
       <div v-else>
         <hr>
