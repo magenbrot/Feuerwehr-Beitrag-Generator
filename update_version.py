@@ -1,5 +1,5 @@
 """
-Increments the version number in manifest.json and performs Git/GitHub actions.
+Increments the version number in package.json and performs Git/GitHub actions.
 """
 
 import json
@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 # --- Configuration ---
-FILE_PATH = 'manifest.json'
+FILE_PATH = 'package.json'
 REPO_NAME = 'magenbrot/Feuerwehr-Beitrag-Generator'
 MAIN_BRANCH = 'main'
 
