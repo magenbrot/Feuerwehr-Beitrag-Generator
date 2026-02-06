@@ -57,7 +57,9 @@ npm run build
 
 ### Manuelles Bauen
 
-Wenn du das Docker-Image lokal baust, stelle sicher, dass du vorher `src/config.js` angelegt hast. Diese wird beim Build-Prozess fest in die Anwendung integriert.
+Wenn du das Docker-Image lokal baust, kannst du die Konfiguration auch über Build-Argumente injizieren, um eine manuelle Erstellung von `src/config.js` zu vermeiden. Zum Beispiel:
+```sh
+docker build --build-arg APP_CONFIG_BASE64=$(base64 -w 0 src/config.js) -t ffpostcreator .
 
 ```sh
 docker build -t ffpostcreator .
