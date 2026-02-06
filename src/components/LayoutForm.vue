@@ -43,66 +43,45 @@ export default {
         return moment(String(value)).format('DD.MM.YYYY')
       }
     },
-    set_stichwort(e) {
-      // console.log(e.target.innerText)
-
-      this.stichwort = e.target.innerText;
+    set_stichwort(val) {
+      this.stichwort = val;
     },
-    set_heute(e) {
-      // console.log(e.target.innerText)
+    set_heute() {
       const now = moment();
       this.datum = now.format("YYYY-MM-DD");
       this.uhrzeit = now.format("HH:mm");
     },
-    set_gestern(e) {
-      // console.log(e.target.innerText)
-      // console.log(new moment().format("HH:mm"))
+    set_gestern() {
       const yesterday = moment().subtract(1, "days");
       this.datum = yesterday.format("YYYY-MM-DD");
       this.uhrzeit = moment().format("HH:mm");
     },
-    set_dauer(e) {
-      // console.log(e.target.innerText)
-
-      this.dauer = e.target.innerText;
+    set_dauer(val) {
+      this.dauer = val;
     },
-    set_ort(e) {
-      // console.log(e.target.innerText)
-
-      this.ort = e.target.innerText + ", ";
+    set_ort(val) {
+      this.ort = val + ", ";
     },
-    set_einheiten(e) {
-      // console.log(e.target.innerText)
-
+    set_einheiten(val) {
       if (this.einheiten.length == 0) {
-        this.einheiten = e.target.innerText;
+        this.einheiten = val;
       } else {
-        this.einheiten = `${this.einheiten}, ${e.target.innerText}`;
+        this.einheiten = `${this.einheiten}, ${val}`;
       }
     },
-    set_bericht(e) {
-      // console.log(e.target.innerText)
-
-      this.bericht = e.target.innerText;
+    set_bericht(val) {
+      this.bericht = val;
     },
-    set_tags(e) {
-      // console.log(e.target.innerText)
-
-      this.tags = `${this.tags} ${e.target.innerText}`;
+    set_tags(val) {
+      this.tags = `${this.tags} ${val}`;
     },
-    reset_einheiten(e) {
-      // console.log(e.target.innerText)
-
+    reset_einheiten() {
       this.einheiten = default_einheiten;
     },
-    reset_einsatzbericht(e) {
-      // console.log(e.target.innerText)
-
+    reset_einsatzbericht() {
       this.bericht = "";
     },
-    reset_tags(e) {
-      // console.log(e.target.innerText)
-
+    reset_tags() {
       this.tags = default_tags;
     },
     create_example() {
@@ -151,12 +130,12 @@ export default {
           <input type="text" class="input" v-model="stichwort" id="stichwort">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_stichwort">ABC-1 Gasgeruch</span>
-              <span class="tag is-clickable" @click="set_stichwort">BMA-/GMA-Melder</span>
-              <span class="tag is-clickable" @click="set_stichwort">BR-1</span>
-              <span class="tag is-clickable" @click="set_stichwort">TH-0 Ölspur</span>
-              <span class="tag is-clickable" @click="set_stichwort">TMR-1 Türnotöffnung</span>
-              <span class="tag is-clickable" @click="set_stichwort">TMR-2/TH-2 VU Klemm</span>
+              <span class="tag is-clickable" @click="set_stichwort('ABC-1 Gasgeruch')">ABC-1 Gasgeruch</span>
+              <span class="tag is-clickable" @click="set_stichwort('BMA-/GMA-Melder')">BMA-/GMA-Melder</span>
+              <span class="tag is-clickable" @click="set_stichwort('BR-1')">BR-1</span>
+              <span class="tag is-clickable" @click="set_stichwort('TH-0 Ölspur')">TH-0 Ölspur</span>
+              <span class="tag is-clickable" @click="set_stichwort('TMR-1 Türnotöffnung')">TMR-1 Türnotöffnung</span>
+              <span class="tag is-clickable" @click="set_stichwort('TMR-2/TH-2 VU Klemm')">TMR-2/TH-2 VU Klemm</span>
             </div>
           </div>
         </div>
@@ -179,12 +158,12 @@ export default {
           <input type="text" v-model="dauer" class="input" id="dauer">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_dauer">30 Minuten</span>
-              <span class="tag is-clickable" @click="set_dauer">45 Minuten</span>
-              <span class="tag is-clickable" @click="set_dauer">1 Stunde</span>
-              <span class="tag is-clickable" @click="set_dauer">1,5 Stunden</span>
-              <span class="tag is-clickable" @click="set_dauer">2 Stunden</span>
-              <span class="tag is-clickable" @click="set_dauer">3 Stunden</span>
+              <span class="tag is-clickable" @click="set_dauer('30 Minuten')">30 Minuten</span>
+              <span class="tag is-clickable" @click="set_dauer('45 Minuten')">45 Minuten</span>
+              <span class="tag is-clickable" @click="set_dauer('1 Stunde')">1 Stunde</span>
+              <span class="tag is-clickable" @click="set_dauer('1,5 Stunden')">1,5 Stunden</span>
+              <span class="tag is-clickable" @click="set_dauer('2 Stunden')">2 Stunden</span>
+              <span class="tag is-clickable" @click="set_dauer('3 Stunden')">3 Stunden</span>
              </div>
           </div>
         </div>
@@ -193,12 +172,12 @@ export default {
           <input type="text" class="input" v-model="ort" id="ort">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_ort">Werdau</span>
-              <span class="tag is-clickable" @click="set_ort">Königswalde</span>
-              <span class="tag is-clickable" @click="set_ort">Langenhessen</span>
-              <span class="tag is-clickable" @click="set_ort">Leubnitz</span>
-              <span class="tag is-clickable" @click="set_ort">Steinpleis</span>
-              <span class="tag is-clickable" @click="set_ort">Zwickau</span>
+              <span class="tag is-clickable" @click="set_ort('Werdau')">Werdau</span>
+              <span class="tag is-clickable" @click="set_ort('Königswalde')">Königswalde</span>
+              <span class="tag is-clickable" @click="set_ort('Langenhessen')">Langenhessen</span>
+              <span class="tag is-clickable" @click="set_ort('Leubnitz')">Leubnitz</span>
+              <span class="tag is-clickable" @click="set_ort('Steinpleis')">Steinpleis</span>
+              <span class="tag is-clickable" @click="set_ort('Zwickau')">Zwickau</span>
             </div>
           </div>
         </div>
@@ -207,14 +186,14 @@ export default {
           <input type="text" class="input" v-model="einheiten" id="einheiten">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_einheiten">FF Königswalde</span>
-              <span class="tag is-clickable" @click="set_einheiten">FF Langenhessen</span>
-              <span class="tag is-clickable" @click="set_einheiten">FF Leubnitz</span>
-              <span class="tag is-clickable" @click="set_einheiten">FF Steinpleis</span>
-              <span class="tag is-clickable" @click="set_einheiten">FF Fraureuth</span>
-              <span class="tag is-clickable" @click="set_einheiten">BF Zwickau</span>
-              <span class="tag is-clickable" @click="set_einheiten">Rettungsdienst</span>
-              <span class="tag is-clickable" @click="set_einheiten">Polizei</span>
+              <span class="tag is-clickable" @click="set_einheiten('FF Königswalde')">FF Königswalde</span>
+              <span class="tag is-clickable" @click="set_einheiten('FF Langenhessen')">FF Langenhessen</span>
+              <span class="tag is-clickable" @click="set_einheiten('FF Leubnitz')">FF Leubnitz</span>
+              <span class="tag is-clickable" @click="set_einheiten('FF Steinpleis')">FF Steinpleis</span>
+              <span class="tag is-clickable" @click="set_einheiten('FF Fraureuth')">FF Fraureuth</span>
+              <span class="tag is-clickable" @click="set_einheiten('BF Zwickau')">BF Zwickau</span>
+              <span class="tag is-clickable" @click="set_einheiten('Rettungsdienst')">Rettungsdienst</span>
+              <span class="tag is-clickable" @click="set_einheiten('Polizei')">Polizei</span>
             </div>
           </div>
         </div>
@@ -223,8 +202,8 @@ export default {
           <textarea class="textarea" rows="3" v-model="bericht" name="bericht"></textarea>
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_bericht">Der Patient wurde über das Tragetuch gerettet und an den Rettungsdienst übergeben.</span>
-              <span class="tag is-clickable" @click="set_bericht">Ausgelaufene Betriebsstoffe wurden mit Bindemittel aufgenommen.</span>
+              <span class="tag is-clickable" @click="set_bericht('Der Patient wurde über das Tragetuch gerettet und an den Rettungsdienst übergeben.')">Der Patient wurde über das Tragetuch gerettet und an den Rettungsdienst übergeben.</span>
+              <span class="tag is-clickable" @click="set_bericht('Ausgelaufene Betriebsstoffe wurden mit Bindemittel aufgenommen.')">Ausgelaufene Betriebsstoffe wurden mit Bindemittel aufgenommen.</span>
             </div>
           </div>
         </div>
@@ -234,26 +213,26 @@ export default {
           <input type="text" class="input" v-model="tags" id="tags">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_tags">#Brand #Feuer #Brandeinsatz #Wärmebildkamera</span>
-              <span class="tag is-clickable" @click="set_tags">#BMA #GMA #Brandmeldeanlage</span>
-              <span class="tag is-clickable" @click="set_tags">#TMR #Menschenrettung #Rettung</span>
-              <span class="tag is-clickable" @click="set_tags">#TH #THL #TechnischeHilfeleistung</span>
-              <span class="tag is-clickable" @click="set_tags">#Verkehr #Verkehrsunfall</span>
-              <span class="tag is-clickable" @click="set_tags">#Türnotöffnung</span>
-              <span class="tag is-clickable" @click="set_tags">#Fehlalarm</span>
-              <span class="tag is-clickable" @click="set_tags">#AGT #Atemschutz #Atemschutzgeräteträger #Angriffstrupp</span>
-              <span class="tag is-clickable" @click="set_tags">#HLF #Hilfeleistungslöschgruppenfahrzeug</span>
-              <span class="tag is-clickable" @click="set_tags">#LF #Löschgruppenfahrzeug</span>
-              <span class="tag is-clickable" @click="set_tags">#DLK #DLAK #Drehleiter</span>
-              <span class="tag is-clickable" @click="set_tags">#ELW #Einsatzleitwagen</span>
-              <span class="tag is-clickable" @click="set_tags">#Rettungsdienst #RTW #Rettungswagen</span>
-              <span class="tag is-clickable" @click="set_tags">#Notarzt #NEF #Notarzteinsatzwagen</span>
-              <span class="tag is-clickable" @click="set_tags">#Polizei #PolizeiSachsen</span>
-              <span class="tag is-clickable" @click="set_tags">#Katastrophe #Katastrophenschutz</span>
-              <span class="tag is-clickable" @click="set_tags">#MANV #MANE</span>
-              <span class="tag is-clickable" @click="set_tags">#Betriebsmittel #Öl #Benzin #Diesel</span>
-              <span class="tag is-clickable" @click="set_tags">#Baum #Kettensäge #Motorkettensäge</span>
-              <span class="tag is-clickable" @click="set_tags">#Umwelt #Umweltschutz</span>
+              <span class="tag is-clickable" @click="set_tags('#Brand #Feuer #Brandeinsatz #Wärmebildkamera')">#Brand #Feuer #Brandeinsatz #Wärmebildkamera</span>
+              <span class="tag is-clickable" @click="set_tags('#BMA #GMA #Brandmeldeanlage')">#BMA #GMA #Brandmeldeanlage</span>
+              <span class="tag is-clickable" @click="set_tags('#TMR #Menschenrettung #Rettung')">#TMR #Menschenrettung #Rettung</span>
+              <span class="tag is-clickable" @click="set_tags('#TH #THL #TechnischeHilfeleistung')">#TH #THL #TechnischeHilfeleistung</span>
+              <span class="tag is-clickable" @click="set_tags('#Verkehr #Verkehrsunfall')">#Verkehr #Verkehrsunfall</span>
+              <span class="tag is-clickable" @click="set_tags('#Türnotöffnung')">#Türnotöffnung</span>
+              <span class="tag is-clickable" @click="set_tags('#Fehlalarm')">#Fehlalarm</span>
+              <span class="tag is-clickable" @click="set_tags('#AGT #Atemschutz #Atemschutzgeräteträger #Angriffstrupp')">#AGT #Atemschutz #Atemschutzgeräteträger #Angriffstrupp</span>
+              <span class="tag is-clickable" @click="set_tags('#HLF #Hilfeleistungslöschgruppenfahrzeug')">#HLF #Hilfeleistungslöschgruppenfahrzeug</span>
+              <span class="tag is-clickable" @click="set_tags('#LF #Löschgruppenfahrzeug')">#LF #Löschgruppenfahrzeug</span>
+              <span class="tag is-clickable" @click="set_tags('#DLK #DLAK #Drehleiter')">#DLK #DLAK #Drehleiter</span>
+              <span class="tag is-clickable" @click="set_tags('#ELW #Einsatzleitwagen')">#ELW #Einsatzleitwagen</span>
+              <span class="tag is-clickable" @click="set_tags('#Rettungsdienst #RTW #Rettungswagen')">#Rettungsdienst #RTW #Rettungswagen</span>
+              <span class="tag is-clickable" @click="set_tags('#Notarzt #NEF #Notarzteinsatzwagen')">#Notarzt #NEF #Notarzteinsatzwagen</span>
+              <span class="tag is-clickable" @click="set_tags('#Polizei #PolizeiSachsen')">#Polizei #PolizeiSachsen</span>
+              <span class="tag is-clickable" @click="set_tags('#Katastrophe #Katastrophenschutz')">#Katastrophe #Katastrophenschutz</span>
+              <span class="tag is-clickable" @click="set_tags('#MANV #MANE')">#MANV #MANE</span>
+              <span class="tag is-clickable" @click="set_tags('#Betriebsmittel #Öl #Benzin #Diesel')">#Betriebsmittel #Öl #Benzin #Diesel</span>
+              <span class="tag is-clickable" @click="set_tags('#Baum #Kettensäge #Motorkettensäge')">#Baum #Kettensäge #Motorkettensäge</span>
+              <span class="tag is-clickable" @click="set_tags('#Umwelt #Umweltschutz')">#Umwelt #Umweltschutz</span>
             </div>
           </div>
         </div>
@@ -294,3 +273,7 @@ export default {
 
   </div>
 </template>
+
+<style>
+/* Add styling if needed */
+</style>
