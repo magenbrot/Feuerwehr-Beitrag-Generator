@@ -1,0 +1,68 @@
+export const DEFAULT_TAGS = '#Feuerwehr #Einsatzbericht #Einsatzinfo #Firefighter #Ehrenamt #Werdau #LandkreisZwickau #Leitstelle #112 #wirfüreuch';
+export const DEFAULT_EINHEITEN = 'FF Werdau';
+
+export const STICHWORT_OPTIONS = [
+  'ABC-1 Gasgeruch',
+  'BMA-/GMA-Melder',
+  'BR-1',
+  'TH-0 Ölspur',
+  'TMR-1 Türnotöffnung',
+  'TMR-2/TH-2 VU Klemm'
+];
+
+export const DAUER_OPTIONS = [
+  '30 Minuten',
+  '45 Minuten',
+  '1 Stunde',
+  '1,5 Stunden',
+  '2 Stunden',
+  '3 Stunden'
+];
+
+export const ORT_OPTIONS = [
+  'Werdau',
+  'Königswalde',
+  'Langenhessen',
+  'Leubnitz',
+  'Steinpleis',
+  'Zwickau'
+];
+
+export const EINHEITEN_OPTIONS = [
+  'FF Königswalde',
+  'FF Langenhessen',
+  'FF Leubnitz',
+  'FF Steinpleis',
+  'FF Fraureuth',
+  'BF Zwickau',
+  'Rettungsdienst',
+  'Polizei'
+];
+
+export const BERICHT_OPTIONS = [
+  'Der Patient wurde über das Tragetuch gerettet und an den Rettungsdienst übergeben.',
+  'Ausgelaufene Betriebsstoffe wurden mit Bindemittel aufgenommen.'
+];
+
+export const TAG_OPTIONS = [
+  '#Brand #Feuer #Brandeinsatz #Wärmebildkamera',
+  '#BMA #GMA #Brandmeldeanlage',
+  '#TMR #Menschenrettung #Rettung',
+  '#TH #THL #TechnischeHilfeleistung',
+  '#Verkehr #Verkehrsunfall',
+  '#Türnotöffnung',
+  '#Fehlalarm',
+  '#AGT #Atemschutz #Atemschutzgeräteträger #Angriffstrupp',
+  '#HLF #Hilfeleistungslöschgruppenfahrzeug',
+  '#LF #Löschgruppenfahrzeug',
+  '#DLK #DLAK #Drehleiter',
+  '#ELW #Einsatzleitwagen',
+  '#Rettungsdienst #RTW #Rettungswagen',
+  '#Notarzt #NEF #Notarzteinsatzwagen',
+  '#Polizei #PolizeiSachsen',
+  '#Katastrophe #Katastrophenschutz',
+  '#MANV #MANE',
+  '#Betriebsmittel #Öl #Benzin #Diesel',
+  '#Baum #Kettensäge #Motorkettensäge',
+  '#Umwelt #Umweltschutz'
+];
