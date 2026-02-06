@@ -1,5 +1,6 @@
 export const DEFAULT_TAGS = '#Feuerwehr #Einsatzbericht #Einsatzinfo #Firefighter #Ehrenamt #Leitstelle #112 #wirfüreuch';
 export const DEFAULT_EINHEITEN = 'FF Musterstadt';
+export const DEFAULT_ORT = 'Musterstadt';
 
 export const STICHWORT_OPTIONS = [
   'ABC-1 Gasgeruch',
