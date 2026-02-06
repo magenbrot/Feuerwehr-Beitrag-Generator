@@ -5,15 +5,23 @@
 
 # Feuerwehr-Beitrag-Generator
 
-Erstelle ein Social Media Post für Facebook und Instagram für deine Feuerwehr in Sekunden. Dieser Fork ist angepasst für die Freiwillige Feuerwehr Werdau.
+Erstelle einen Social Media Post für Facebook und Instagram für deine Feuerwehr in Sekunden.
 
 Demo-Website: [112.ovtec.it](https://112.ovtec.it/)
 
 Forked from [Turbopixel](https://github.com/turbopixel/Feuerwehr-Beitrag-Generator)
 
-## vite Konfiguration
+## Konfiguration
 
-[Vite Configuration Reference](https://vitejs.dev/config/).
+Damit der Generator für deine Feuerwehr passt (Ortsnamen, Fahrzeuge, Tags), musst du eine Konfigurationsdatei anlegen.
+
+1.  Kopiere die Vorlage:
+    ```sh
+    cp src/config.js.dist src/config.js
+    ```
+2.  Bearbeite `src/config.js` und trage deine lokalen Daten ein (Ortsnamen, Einheiten, Standard-Tags).
+
+*Hinweis: `src/config.js` wird von git ignoriert, damit deine persönlichen Einstellungen nicht versehentlich veröffentlicht werden.*
 
 ## Mitmachen
 
@@ -22,65 +30,62 @@ Befehle aus, um an diesem Projekt mitzumachen.
 
 [Forke](https://github.com/magenbrot/Feuerwehr-Beitrag-Generator/fork) dieses Repository und checke den Code in deiner lokalen Umgebung aus.
 
-### Mit Docker entwickeln/veröffentlichen
-
-siehe auch [Wiki](https://github.com/magenbrot/Feuerwehr-Beitrag-Generator/wiki/Pers%C3%B6nliche-Notizen-zur-Erzeugung-eines-neuen-Releases)
-
-#### Code anpassen
-
-Mach die notwendigen Änderungen am Code. Erzeuge auch gerne einen Pull Request für dieses Repository.
-
-#### Docker image erzeugen und testen
-
-```sh
-docker buildx build . -t magenbrot/ffpostcreator
-docker run -it -p 8080:80 --rm --name ffpostcreator magenbrot/ffpostcreator:latest
-```
-
-Die App ist jetzt zum lokalen Testen unter [http://127.0.0.1:8080/](http://127.0.0.1:8080/) erreichbar
-
-#### Docker Image veröffentlichen
-
-```sh
-docker login -u <your-username> --password-stdin
-# Passwort nach Aufforderung eingeben
-# Ein erfolgreicher Login wird mit 'Login Succeeded' angezeigt
-
-docker push <your-dockerid>/ffpostcreator
-# ohne Angabe eines Tags (: nach dem Namen) wird der Tag 'latest' verwendet
-```
-
-#### Deployment
-
-Für die Veröffentlichung der App empfiehlt es sich einen Reverseproxy mit HTTPS wie nginx davor zu setzen.
-
-Beispiel via Docker Compose:
-
-```sh
-  ffpostcreator:
-    image: <your-dockerid>/ffpostcreator:latest
-    container_name: ffpostcreator
-    ports:
-      - 8095:80
-    restart: unless-stopped
-```
-
 ### Lokal ausführen
 
-#### npm Pakete installieren
+#### 1. npm Pakete installieren
 
 ```sh
 npm install
 ```
 
-#### Projekt lokal ausführen mit hot-reload
+#### 2. Konfiguration erstellen
+(Siehe oben unter "Konfiguration")
+
+#### 3. Projekt lokal ausführen mit hot-reload
 
 ```sh
 npm run dev
 ```
 
-#### Projekt kompilieren
+#### 4. Projekt kompilieren
 
 ```sh
 npm run build
+```
+
+## Docker / Deployment
+
+### Manuelles Bauen
+
+Wenn du das Docker-Image lokal baust, stelle sicher, dass du vorher `src/config.js` angelegt hast. Diese wird beim Build-Prozess fest in die Anwendung integriert.
+
+```sh
+docker build -t ffpostcreator .
+```
+
+### GitHub Actions (CI/CD)
+
+Da die `src/config.js` nicht im Repository liegt, muss sie für den automatischen Build-Prozess via GitHub Secrets bereitgestellt werden.
+
+1.  Kodiere deine lokale `src/config.js` als Base64:
+    ```sh
+    base64 -w 0 src/config.js
+    # MacOS: base64 -b 0 src/config.js
+    ```
+2.  Gehe in deinem GitHub Repository zu **Settings** -> **Secrets and variables** -> **Actions**.
+3.  Erstelle ein neues **Repository Secret** mit dem Namen `APP_CONFIG_BASE64`.
+4.  Füge den Base64-String als Wert ein.
+
+Der Workflow (`docker-image.yml`) prüft beim Bauen, ob dieses Secret existiert, und injiziert die Konfiguration automatisch vor dem Build. Existiert das Secret nicht, wird die Standard-Konfiguration (`src/config.js.dist`) verwendet.
+
+### Deployment via Docker Compose
+
+```yaml
+services:
+  ffpostcreator:
+    image: ghcr.io/magenbrot/feuerwehr-beitrag-generator:latest
+    container_name: ffpostcreator
+    ports:
+      - 8095:80
+    restart: unless-stopped
 ```
