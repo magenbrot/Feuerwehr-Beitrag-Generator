@@ -34,7 +34,7 @@ Mach die notwendigen Änderungen am Code. Erzeuge auch gerne einen Pull Request 
 
 ```sh
 docker buildx build . -t magenbrot/ffpostcreator
-docker run -it -p 8080:80 --rm --name ffpostcreator <your-dockerid>/ffpostcreator:latest
+docker run -it -p 8080:80 --rm --name ffpostcreator magenbrot/ffpostcreator:latest
 ```
 
 Die App ist jetzt zum lokalen Testen unter [http://127.0.0.1:8080/](http://127.0.0.1:8080/) erreichbar
