@@ -1,8 +1,15 @@
 <script>
 import moment from 'moment';
-
-const default_tags = '#Feuerwehr #Einsatzbericht #Einsatzinfo #Firefighter #Ehrenamt #Werdau #LandkreisZwickau #Leitstelle #112 #wirfüreuch';
-const default_einheiten = 'FF Werdau';
+import {
+  DEFAULT_TAGS,
+  DEFAULT_EINHEITEN,
+  STICHWORT_OPTIONS,
+  DAUER_OPTIONS,
+  ORT_OPTIONS,
+  EINHEITEN_OPTIONS,
+  BERICHT_OPTIONS,
+  TAG_OPTIONS
+} from '../config.js';
 
 export default {
   components: {},
@@ -16,10 +23,17 @@ export default {
       dauer: '',
       stichwort: '',
       ort: '',
-      einheiten: default_einheiten,
+      einheiten: DEFAULT_EINHEITEN,
       bericht: '',
-      tags: default_tags,
-      link: ''
+      tags: DEFAULT_TAGS,
+      link: '',
+      // Expose config options to template
+      stichwortOptions: STICHWORT_OPTIONS,
+      dauerOptions: DAUER_OPTIONS,
+      ortOptions: ORT_OPTIONS,
+      einheitenOptions: EINHEITEN_OPTIONS,
+      berichtOptions: BERICHT_OPTIONS,
+      tagOptions: TAG_OPTIONS
     }
   },
   watch: {
@@ -76,13 +90,13 @@ export default {
       this.tags = `${this.tags} ${val}`;
     },
     reset_einheiten() {
-      this.einheiten = default_einheiten;
+      this.einheiten = DEFAULT_EINHEITEN;
     },
     reset_einsatzbericht() {
       this.bericht = "";
     },
     reset_tags() {
-      this.tags = default_tags;
+      this.tags = DEFAULT_TAGS;
     },
     create_example() {
       const now = moment();
@@ -93,9 +107,9 @@ export default {
       this.dauer = "1 Stunde";
       this.stichwort = "TMR-1 Türnotöffnung";
       this.ort = "Werdau, Bertolt-Brecht-Straße 18";
-      this.einheiten = `${default_einheiten}, Rettungsdienst, Polizei`;
+      this.einheiten = `${DEFAULT_EINHEITEN}, Rettungsdienst, Polizei`;
       this.bericht = 'Das ist ein Beispiel Einsatzbericht.';
-      this.tags = default_tags;
+      this.tags = DEFAULT_TAGS;
       this.link = 'https://www.feuerwehr-werdau.de/';
     },
     clear_form() {
@@ -106,9 +120,9 @@ export default {
       this.dauer = '';
       this.stichwort = '';
       this.ort = '';
-      this.einheiten = default_einheiten;
+      this.einheiten = DEFAULT_EINHEITEN;
       this.bericht = '';
-      this.tags = default_tags;
+      this.tags = DEFAULT_TAGS;
       this.link = '';
     }
   }
@@ -130,12 +144,12 @@ export default {
           <input type="text" class="input" v-model="stichwort" id="stichwort">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_stichwort('ABC-1 Gasgeruch')">ABC-1 Gasgeruch</span>
-              <span class="tag is-clickable" @click="set_stichwort('BMA-/GMA-Melder')">BMA-/GMA-Melder</span>
-              <span class="tag is-clickable" @click="set_stichwort('BR-1')">BR-1</span>
-              <span class="tag is-clickable" @click="set_stichwort('TH-0 Ölspur')">TH-0 Ölspur</span>
-              <span class="tag is-clickable" @click="set_stichwort('TMR-1 Türnotöffnung')">TMR-1 Türnotöffnung</span>
-              <span class="tag is-clickable" @click="set_stichwort('TMR-2/TH-2 VU Klemm')">TMR-2/TH-2 VU Klemm</span>
+              <span
+                v-for="opt in stichwortOptions"
+                :key="opt"
+                class="tag is-clickable"
+                @click="set_stichwort(opt)"
+              >{{ opt }}</span>
             </div>
           </div>
         </div>
@@ -158,12 +172,12 @@ export default {
           <input type="text" v-model="dauer" class="input" id="dauer">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_dauer('30 Minuten')">30 Minuten</span>
-              <span class="tag is-clickable" @click="set_dauer('45 Minuten')">45 Minuten</span>
-              <span class="tag is-clickable" @click="set_dauer('1 Stunde')">1 Stunde</span>
-              <span class="tag is-clickable" @click="set_dauer('1,5 Stunden')">1,5 Stunden</span>
-              <span class="tag is-clickable" @click="set_dauer('2 Stunden')">2 Stunden</span>
-              <span class="tag is-clickable" @click="set_dauer('3 Stunden')">3 Stunden</span>
+              <span
+                v-for="opt in dauerOptions"
+                :key="opt"
+                class="tag is-clickable"
+                @click="set_dauer(opt)"
+              >{{ opt }}</span>
              </div>
           </div>
         </div>
@@ -172,12 +186,12 @@ export default {
           <input type="text" class="input" v-model="ort" id="ort">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_ort('Werdau')">Werdau</span>
-              <span class="tag is-clickable" @click="set_ort('Königswalde')">Königswalde</span>
-              <span class="tag is-clickable" @click="set_ort('Langenhessen')">Langenhessen</span>
-              <span class="tag is-clickable" @click="set_ort('Leubnitz')">Leubnitz</span>
-              <span class="tag is-clickable" @click="set_ort('Steinpleis')">Steinpleis</span>
-              <span class="tag is-clickable" @click="set_ort('Zwickau')">Zwickau</span>
+              <span
+                v-for="opt in ortOptions"
+                :key="opt"
+                class="tag is-clickable"
+                @click="set_ort(opt)"
+              >{{ opt }}</span>
             </div>
           </div>
         </div>
@@ -186,14 +200,12 @@ export default {
           <input type="text" class="input" v-model="einheiten" id="einheiten">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_einheiten('FF Königswalde')">FF Königswalde</span>
-              <span class="tag is-clickable" @click="set_einheiten('FF Langenhessen')">FF Langenhessen</span>
-              <span class="tag is-clickable" @click="set_einheiten('FF Leubnitz')">FF Leubnitz</span>
-              <span class="tag is-clickable" @click="set_einheiten('FF Steinpleis')">FF Steinpleis</span>
-              <span class="tag is-clickable" @click="set_einheiten('FF Fraureuth')">FF Fraureuth</span>
-              <span class="tag is-clickable" @click="set_einheiten('BF Zwickau')">BF Zwickau</span>
-              <span class="tag is-clickable" @click="set_einheiten('Rettungsdienst')">Rettungsdienst</span>
-              <span class="tag is-clickable" @click="set_einheiten('Polizei')">Polizei</span>
+              <span
+                v-for="opt in einheitenOptions"
+                :key="opt"
+                class="tag is-clickable"
+                @click="set_einheiten(opt)"
+              >{{ opt }}</span>
             </div>
           </div>
         </div>
@@ -202,8 +214,12 @@ export default {
           <textarea class="textarea" rows="3" v-model="bericht" name="bericht"></textarea>
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_bericht('Der Patient wurde über das Tragetuch gerettet und an den Rettungsdienst übergeben.')">Der Patient wurde über das Tragetuch gerettet und an den Rettungsdienst übergeben.</span>
-              <span class="tag is-clickable" @click="set_bericht('Ausgelaufene Betriebsstoffe wurden mit Bindemittel aufgenommen.')">Ausgelaufene Betriebsstoffe wurden mit Bindemittel aufgenommen.</span>
+              <span
+                v-for="opt in berichtOptions"
+                :key="opt"
+                class="tag is-clickable"
+                @click="set_bericht(opt)"
+              >{{ opt }}</span>
             </div>
           </div>
         </div>
@@ -213,26 +229,12 @@ export default {
           <input type="text" class="input" v-model="tags" id="tags">
           <div class="help">
             <div class="tags">
-              <span class="tag is-clickable" @click="set_tags('#Brand #Feuer #Brandeinsatz #Wärmebildkamera')">#Brand #Feuer #Brandeinsatz #Wärmebildkamera</span>
-              <span class="tag is-clickable" @click="set_tags('#BMA #GMA #Brandmeldeanlage')">#BMA #GMA #Brandmeldeanlage</span>
-              <span class="tag is-clickable" @click="set_tags('#TMR #Menschenrettung #Rettung')">#TMR #Menschenrettung #Rettung</span>
-              <span class="tag is-clickable" @click="set_tags('#TH #THL #TechnischeHilfeleistung')">#TH #THL #TechnischeHilfeleistung</span>
-              <span class="tag is-clickable" @click="set_tags('#Verkehr #Verkehrsunfall')">#Verkehr #Verkehrsunfall</span>
-              <span class="tag is-clickable" @click="set_tags('#Türnotöffnung')">#Türnotöffnung</span>
-              <span class="tag is-clickable" @click="set_tags('#Fehlalarm')">#Fehlalarm</span>
-              <span class="tag is-clickable" @click="set_tags('#AGT #Atemschutz #Atemschutzgeräteträger #Angriffstrupp')">#AGT #Atemschutz #Atemschutzgeräteträger #Angriffstrupp</span>
-              <span class="tag is-clickable" @click="set_tags('#HLF #Hilfeleistungslöschgruppenfahrzeug')">#HLF #Hilfeleistungslöschgruppenfahrzeug</span>
-              <span class="tag is-clickable" @click="set_tags('#LF #Löschgruppenfahrzeug')">#LF #Löschgruppenfahrzeug</span>
-              <span class="tag is-clickable" @click="set_tags('#DLK #DLAK #Drehleiter')">#DLK #DLAK #Drehleiter</span>
-              <span class="tag is-clickable" @click="set_tags('#ELW #Einsatzleitwagen')">#ELW #Einsatzleitwagen</span>
-              <span class="tag is-clickable" @click="set_tags('#Rettungsdienst #RTW #Rettungswagen')">#Rettungsdienst #RTW #Rettungswagen</span>
-              <span class="tag is-clickable" @click="set_tags('#Notarzt #NEF #Notarzteinsatzwagen')">#Notarzt #NEF #Notarzteinsatzwagen</span>
-              <span class="tag is-clickable" @click="set_tags('#Polizei #PolizeiSachsen')">#Polizei #PolizeiSachsen</span>
-              <span class="tag is-clickable" @click="set_tags('#Katastrophe #Katastrophenschutz')">#Katastrophe #Katastrophenschutz</span>
-              <span class="tag is-clickable" @click="set_tags('#MANV #MANE')">#MANV #MANE</span>
-              <span class="tag is-clickable" @click="set_tags('#Betriebsmittel #Öl #Benzin #Diesel')">#Betriebsmittel #Öl #Benzin #Diesel</span>
-              <span class="tag is-clickable" @click="set_tags('#Baum #Kettensäge #Motorkettensäge')">#Baum #Kettensäge #Motorkettensäge</span>
-              <span class="tag is-clickable" @click="set_tags('#Umwelt #Umweltschutz')">#Umwelt #Umweltschutz</span>
+              <span
+                v-for="opt in tagOptions"
+                :key="opt"
+                class="tag is-clickable"
+                @click="set_tags(opt)"
+              >{{ opt }}</span>
             </div>
           </div>
         </div>

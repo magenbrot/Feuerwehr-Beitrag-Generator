@@ -36,6 +36,16 @@ jobs:
             magenbrot/ffpostcreator
             ghcr.io/${{ github.repository }}
 
+      - name: Inject configuration
+        run: |
+          if [ -n "${{ secrets.APP_CONFIG_BASE64 }}" ]; then
+            echo "Injecting configuration from secret..."
+            echo "${{ secrets.APP_CONFIG_BASE64 }}" | base64 -d > src/config.js
+          else
+            echo "No secret found. Using default configuration..."
+            cp src/config.js.dist src/config.js
+          fi
+
       - name: Build and push Docker images
         uses: docker/build-push-action@v6
         with:
