@@ -1,5 +1,5 @@
-export const DEFAULT_TAGS = '#Feuerwehr #Einsatzbericht #Einsatzinfo #Firefighter #Ehrenamt #Werdau #LandkreisZwickau #Leitstelle #112 #wirfüreuch';
-export const DEFAULT_EINHEITEN = 'FF Werdau';
+export const DEFAULT_TAGS = '#Feuerwehr #Einsatzbericht #Einsatzinfo #Firefighter #Ehrenamt #Leitstelle #112 #wirfüreuch';
+export const DEFAULT_EINHEITEN = 'FF Musterstadt';
 
 export const STICHWORT_OPTIONS = [
   'ABC-1 Gasgeruch',
@@ -20,21 +20,18 @@ export const DAUER_OPTIONS = [
 ];
 
 export const ORT_OPTIONS = [
-  'Werdau',
-  'Königswalde',
-  'Langenhessen',
-  'Leubnitz',
-  'Steinpleis',
-  'Zwickau'
+  'Musterstadt',
+  'Musterdorf',
+  'Ortsteil A',
+  'Ortsteil B',
+  'Nachbarstadt'
 ];
 
 export const EINHEITEN_OPTIONS = [
-  'FF Königswalde',
-  'FF Langenhessen',
-  'FF Leubnitz',
-  'FF Steinpleis',
-  'FF Fraureuth',
-  'BF Zwickau',
+  'FF Musterdorf',
+  'FF Ortsteil A',
+  'FF Ortsteil B',
+  'FF Nachbarstadt',
   'Rettungsdienst',
   'Polizei'
 ];
@@ -59,7 +56,7 @@ export const TAG_OPTIONS = [
   '#ELW #Einsatzleitwagen',
   '#Rettungsdienst #RTW #Rettungswagen',
   '#Notarzt #NEF #Notarzteinsatzwagen',
-  '#Polizei #PolizeiSachsen',
+  '#Polizei',
   '#Katastrophe #Katastrophenschutz',
   '#MANV #MANE',
   '#Betriebsmittel #Öl #Benzin #Diesel',
