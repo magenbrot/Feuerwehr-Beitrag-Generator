@@ -3,6 +3,7 @@ import moment from 'moment';
 import {
   DEFAULT_TAGS,
   DEFAULT_EINHEITEN,
+  DEFAULT_ORT,
   STICHWORT_OPTIONS,
   DAUER_OPTIONS,
   ORT_OPTIONS,
@@ -22,7 +23,7 @@ export default {
       uhrzeit: '',
       dauer: '',
       stichwort: '',
-      ort: '',
+      ort: DEFAULT_ORT,
       einheiten: DEFAULT_EINHEITEN,
       bericht: '',
       tags: DEFAULT_TAGS,
@@ -106,7 +107,7 @@ export default {
       this.uhrzeit = now.format("HH:mm");
       this.dauer = "1 Stunde";
       this.stichwort = "TMR-1 Türnotöffnung";
-      this.ort = "Werdau, Bertolt-Brecht-Straße 18";
+      this.ort = `${DEFAULT_ORT}, Bertolt-Brecht-Straße 18`;
       this.einheiten = `${DEFAULT_EINHEITEN}, Rettungsdienst, Polizei`;
       this.bericht = 'Das ist ein Beispiel Einsatzbericht.';
       this.tags = DEFAULT_TAGS;
@@ -119,7 +120,7 @@ export default {
       this.uhrzeit = '';
       this.dauer = '';
       this.stichwort = '';
-      this.ort = '';
+      this.ort = DEFAULT_ORT;
       this.einheiten = DEFAULT_EINHEITEN;
       this.bericht = '';
       this.tags = DEFAULT_TAGS;
