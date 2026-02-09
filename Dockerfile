@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # production stage
-FROM nginx:1.29.4-alpine3.23 AS production-stage
+FROM nginx:1.29.5-alpine3.23 AS production-stage
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=build-stage /ffpostcreator/dist /usr/share/nginx/html
