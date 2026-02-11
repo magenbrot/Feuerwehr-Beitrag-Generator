@@ -56,7 +56,7 @@ export const TAG_OPTIONS = [
   '#DLK #DLAK #Drehleiter',
   '#ELW #Einsatzleitwagen',
   '#Rettungsdienst #RTW #Rettungswagen',
-  '#Notarzt #NEF #Notarzteinsatzwagen',
+  '#Notarzt #NEF #Notarzteinsatzfahrzeug',
   '#Polizei',
   '#Katastrophe #Katastrophenschutz',
   '#MANV #MANE',
