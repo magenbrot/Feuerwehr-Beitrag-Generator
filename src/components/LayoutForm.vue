@@ -173,6 +173,11 @@ export default {
         document.body.removeChild(clone);
       }
     }
+  },
+  beforeUnmount() {
+    if (this.toastTimeoutId) {
+      clearTimeout(this.toastTimeoutId);
+    }
   }
 };
 </script>
