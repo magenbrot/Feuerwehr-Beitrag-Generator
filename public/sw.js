@@ -29,6 +29,11 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Nur GET-Requests cachen
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
       const fetchPromise = fetch(event.request).then(networkResponse => {
@@ -36,20 +41,18 @@ self.addEventListener('fetch', event => {
         if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
           return networkResponse;
         }
-        
+
         // Clone the response because it's a stream and can only be consumed once
         const responseToCache = networkResponse.clone();
 
-        caches.open(CACHE_NAME).then(cache => {
+        // Return the promise chain to ensure caching completes properly
+        return caches.open(CACHE_NAME).then(cache => {
           cache.put(event.request, responseToCache);
+          return networkResponse;
         });
-
-        return networkResponse;
-      }).catch(() => {
-        // Network failed (offline)
       });
 
-      // Return cached response immediately if available, otherwise wait for network
+      // Return cached response immediately if available, otherwise wait for network/cache chain
       return cachedResponse || fetchPromise;
     })
   );
