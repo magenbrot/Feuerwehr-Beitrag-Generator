@@ -36,7 +36,8 @@ export default {
       berichtOptions: BERICHT_OPTIONS,
       tagOptions: TAG_OPTIONS,
       toastMessage: '',
-      showToastNotification: false
+      showToastNotification: false,
+      toastTimeoutId: null
     }
   },
   watch: {
@@ -131,8 +132,14 @@ export default {
     showToast(message) {
       this.toastMessage = message;
       this.showToastNotification = true;
-      setTimeout(() => {
+      
+      if (this.toastTimeoutId) {
+        clearTimeout(this.toastTimeoutId);
+      }
+      
+      this.toastTimeoutId = setTimeout(() => {
         this.showToastNotification = false;
+        this.toastTimeoutId = null;
       }, 3000);
     },
     async copyText(mode) {
