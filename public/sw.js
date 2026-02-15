@@ -51,7 +51,8 @@ self.addEventListener('fetch', event => {
 
       // Stale-while-revalidate: Zeige Cache, update im Hintergrund
       if (cachedResponse) {
-        event.waitUntil(fetchPromise);
+        // Fehler im Hintergrund-Update abfangen, damit waitUntil nicht meckert
+        event.waitUntil(fetchPromise.catch(() => {}));
         return cachedResponse;
       }
 
