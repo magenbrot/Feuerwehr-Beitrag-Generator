@@ -341,7 +341,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 .toast-notification {
   position: fixed;
   bottom: 20px;
