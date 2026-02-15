@@ -34,7 +34,9 @@ export default {
       ortOptions: ORT_OPTIONS,
       einheitenOptions: EINHEITEN_OPTIONS,
       berichtOptions: BERICHT_OPTIONS,
-      tagOptions: TAG_OPTIONS
+      tagOptions: TAG_OPTIONS,
+      toastMessage: '',
+      showToastNotification: false
     }
   },
   watch: {
@@ -107,7 +109,7 @@ export default {
       this.uhrzeit = now.format("HH:mm");
       this.dauer = "1 Stunde";
       this.stichwort = "TMR-1 Türnotöffnung";
-      this.ort = `${DEFAULT_ORT}Bertolt-Brecht-Straße 18`;
+      this.ort = `${DEFAULT_ORT}, Bertolt-Brecht-Straße 18`;
       this.einheiten = `${DEFAULT_EINHEITEN}, Rettungsdienst, Polizei`;
       this.bericht = 'Das ist ein Beispiel Einsatzbericht.';
       this.tags = DEFAULT_TAGS;
@@ -125,6 +127,13 @@ export default {
       this.bericht = '';
       this.tags = DEFAULT_TAGS;
       this.link = '';
+    },
+    showToast(message) {
+      this.toastMessage = message;
+      this.showToastNotification = true;
+      setTimeout(() => {
+        this.showToastNotification = false;
+      }, 3000);
     },
     async copyText(mode) {
       const el = this.$refs.vorschauContent;
@@ -149,10 +158,10 @@ export default {
       
       try {
         await navigator.clipboard.writeText(text);
-        alert(mode === 'instagram' ? 'Text für Instagram kopiert!' : 'Text kopiert!');
+        this.showToast(mode === 'instagram' ? 'Text für Instagram kopiert!' : 'Text kopiert!');
       } catch (err) {
         console.error('Failed to copy: ', err);
-        alert('Fehler beim Kopieren. Bitte manuell auswählen.');
+        this.showToast('Fehler beim Kopieren.');
       } finally {
         document.body.removeChild(clone);
       }
@@ -163,6 +172,11 @@ export default {
 
 <template>
   <div class="columns is-multiline">
+    <!-- Toast Notification -->
+    <div class="toast-notification notification is-primary" v-if="showToastNotification">
+      {{ toastMessage }}
+    </div>
+
     <div class="column is-12">
       <h3 class="title is-4">Einsatzdaten eingeben <span class="tag is-primary is-clickable" @click="create_example">Beispiel generieren</span></h3>
 
@@ -321,5 +335,17 @@ export default {
 </template>
 
 <style>
-/* Add styling if needed */
+.toast-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
