@@ -318,8 +318,8 @@ export default {
           <div v-if="link.length > 0" class="show-only-on-instagram" style="display:none;"><br/>&#x1F517; Link zum Bericht in Bio!<br/></div>
         <div><br/>{{ tags }}</div>
       </div>
-      <br>
-      <div class="buttons">
+      
+      <div class="buttons mt-4">
         <button class="button is-info" @click="copyText('all')">
           <span class="icon is-small"><i class="fas fa-copy"></i></span>
           <span>Text kopieren</span>
