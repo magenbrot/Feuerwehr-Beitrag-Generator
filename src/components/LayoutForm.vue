@@ -125,6 +125,41 @@ export default {
       this.bericht = '';
       this.tags = DEFAULT_TAGS;
       this.link = '';
+    },
+    async copyText(mode) {
+      const el = this.$refs.vorschauContent;
+      
+      // Clone node to manipulate it without affecting view
+      const clone = el.cloneNode(true);
+      
+      // Handle Instagram specific logic
+      if (mode === 'instagram') {
+        clone.querySelectorAll('.hide-on-instagram').forEach(e => e.remove());
+        clone.querySelectorAll('.show-only-on-instagram').forEach(e => e.style.display = 'block');
+      } else {
+        clone.querySelectorAll('.show-only-on-instagram').forEach(e => e.remove());
+      }
+
+      // We need to preserve newlines. innerText handles this well, but we need to ensure the clone is momentarily "rendered" or handled correctly.
+      // Since clone is not in DOM, innerText might behave differently depending on browser.
+      // A safer way is to replace <br> with newlines in HTML string before extracting text, 
+      // OR append clone to body (hidden), copy, remove. Let's try the append method for reliability.
+      
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      document.body.appendChild(clone);
+      
+      const text = clone.innerText;
+      
+      try {
+        await navigator.clipboard.writeText(text);
+        alert(mode === 'instagram' ? 'Text für Instagram kopiert!' : 'Text kopiert!');
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+        alert('Fehler beim Kopieren. Bitte manuell auswählen.');
+      } finally {
+        document.body.removeChild(clone);
+      }
     }
   }
 };
@@ -255,7 +290,7 @@ export default {
       <div class="content">
         <p>Kopiere deinen Social Media Post für Facebook und Instagram:</p>
       </div>
-      <div class="textarea is-fullwidth" contenteditable="true" rows="6" id="vorschau">
+      <div class="textarea is-fullwidth" contenteditable="true" rows="6" id="vorschau" ref="vorschauContent">
         <div v-if="nummer !== '' && jahr !== ''"><strong>&#x1F6A8; +++ Einsatzbericht {{  nummer }} / {{  jahr }} +++</strong></div>
           <div v-else-if="nummer !=='' && jahr === ''"><strong>&#x1F6A8; +++ Einsatzbericht {{ nummer }} +++</strong></div>
           <div v-else><strong>&#x1F6A8; +++ Einsatzbericht +++ </strong></div>
@@ -269,8 +304,20 @@ export default {
             v-if="bericht.length > 0"
             v-for="(zeile,zeilennummer) of bericht.split('\n')"
             v-bind:key="zeilennummer" >{{ zeile }}<br/></div>
-          <div v-if="link.length > 0"><br/>{{ link }}<br/></div>
+          <div v-if="link.length > 0" class="hide-on-instagram"><br/>{{ link }}<br/></div>
+          <div v-if="link.length > 0" class="show-only-on-instagram" style="display:none;"><br/>&#x1F517; Link zum Bericht in Bio!<br/></div>
         <div><br/>{{ tags }}</div>
+      </div>
+      <br>
+      <div class="buttons">
+        <button class="button is-info" @click="copyText('all')">
+          <span class="icon is-small"><i class="fas fa-copy"></i></span>
+          <span>Text kopieren</span>
+        </button>
+        <button class="button is-warning" @click="copyText('instagram')">
+          <span class="icon is-small"><i class="fab fa-instagram"></i></span>
+          <span>Für Instagram kopieren</span>
+        </button>
       </div>
     </div>
 
