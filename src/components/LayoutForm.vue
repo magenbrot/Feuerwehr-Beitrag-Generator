@@ -34,7 +34,10 @@ export default {
       ortOptions: ORT_OPTIONS,
       einheitenOptions: EINHEITEN_OPTIONS,
       berichtOptions: BERICHT_OPTIONS,
-      tagOptions: TAG_OPTIONS
+      tagOptions: TAG_OPTIONS,
+      toastMessage: '',
+      showToastNotification: false,
+      toastTimeoutId: null
     }
   },
   watch: {
@@ -107,7 +110,7 @@ export default {
       this.uhrzeit = now.format("HH:mm");
       this.dauer = "1 Stunde";
       this.stichwort = "TMR-1 Türnotöffnung";
-      this.ort = `${DEFAULT_ORT}Bertolt-Brecht-Straße 18`;
+      this.ort = `${DEFAULT_ORT}, Bertolt-Brecht-Straße 18`;
       this.einheiten = `${DEFAULT_EINHEITEN}, Rettungsdienst, Polizei`;
       this.bericht = 'Das ist ein Beispiel Einsatzbericht.';
       this.tags = DEFAULT_TAGS;
@@ -125,6 +128,55 @@ export default {
       this.bericht = '';
       this.tags = DEFAULT_TAGS;
       this.link = '';
+    },
+    showToast(message) {
+      this.toastMessage = message;
+      this.showToastNotification = true;
+
+      if (this.toastTimeoutId) {
+        clearTimeout(this.toastTimeoutId);
+      }
+
+      this.toastTimeoutId = setTimeout(() => {
+        this.showToastNotification = false;
+        this.toastTimeoutId = null;
+      }, 3000);
+    },
+    async copyText(mode) {
+      const el = this.$refs.vorschauContent;
+
+      // Clone node to manipulate it without affecting view
+      const clone = el.cloneNode(true);
+
+      // Handle Instagram specific logic
+      if (mode === 'instagram') {
+        clone.querySelectorAll('.hide-on-instagram').forEach(e => e.remove());
+        clone.querySelectorAll('.show-only-on-instagram').forEach(e => e.style.display = 'block');
+      } else {
+        clone.querySelectorAll('.show-only-on-instagram').forEach(e => e.remove());
+      }
+
+      // Temporarily append to DOM to ensure innerText works consistently
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      document.body.appendChild(clone);
+
+      const text = clone.innerText;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        this.showToast(mode === 'instagram' ? 'Text für Instagram kopiert!' : 'Text kopiert!');
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+        this.showToast('Fehler beim Kopieren.');
+      } finally {
+        document.body.removeChild(clone);
+      }
+    }
+  },
+  beforeUnmount() {
+    if (this.toastTimeoutId) {
+      clearTimeout(this.toastTimeoutId);
     }
   }
 };
@@ -132,6 +184,11 @@ export default {
 
 <template>
   <div class="columns is-multiline">
+    <!-- Toast Notification -->
+    <div class="toast-notification notification is-primary" v-if="showToastNotification">
+      {{ toastMessage }}
+    </div>
+
     <div class="column is-12">
       <h3 class="title is-4">Einsatzdaten eingeben <span class="tag is-primary is-clickable" @click="create_example">Beispiel generieren</span></h3>
 
@@ -255,7 +312,7 @@ export default {
       <div class="content">
         <p>Kopiere deinen Social Media Post für Facebook und Instagram:</p>
       </div>
-      <div class="textarea is-fullwidth" contenteditable="true" rows="6" id="vorschau">
+      <div class="textarea is-fullwidth" contenteditable="true" rows="6" id="vorschau" ref="vorschauContent">
         <div v-if="nummer !== '' && jahr !== ''"><strong>&#x1F6A8; +++ Einsatzbericht {{  nummer }} / {{  jahr }} +++</strong></div>
           <div v-else-if="nummer !=='' && jahr === ''"><strong>&#x1F6A8; +++ Einsatzbericht {{ nummer }} +++</strong></div>
           <div v-else><strong>&#x1F6A8; +++ Einsatzbericht +++ </strong></div>
@@ -269,14 +326,38 @@ export default {
             v-if="bericht.length > 0"
             v-for="(zeile,zeilennummer) of bericht.split('\n')"
             v-bind:key="zeilennummer" >{{ zeile }}<br/></div>
-          <div v-if="link.length > 0"><br/>{{ link }}<br/></div>
+          <div v-if="link.length > 0" class="hide-on-instagram"><br/>{{ link }}<br/></div>
+          <div v-if="link.length > 0" class="show-only-on-instagram" style="display:none;"><br/>&#x1F517; Link zum Bericht in unserer Bio!<br/></div>
         <div><br/>{{ tags }}</div>
+      </div>
+
+      <div class="buttons mt-4">
+        <button class="button is-info" @click="copyText('all')">
+          <span class="icon is-small"><i class="fas fa-copy"></i></span>
+          <span>Text kopieren</span>
+        </button>
+        <button class="button is-warning" @click="copyText('instagram')">
+          <span class="icon is-small"><i class="fab fa-instagram"></i></span>
+          <span>Für Instagram kopieren</span>
+        </button>
       </div>
     </div>
 
   </div>
 </template>
 
-<style>
-/* Add styling if needed */
+<style scoped>
+.toast-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>

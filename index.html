@@ -11,6 +11,15 @@
     <meta property="og:url" content="https://112.ovtec.it">
     <title>Feuerwehr Beitrag Generator | Für Social Media Posts</title>
     <link rel="canonical" href="https://112.ovtec.it"/>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="app"></div>
