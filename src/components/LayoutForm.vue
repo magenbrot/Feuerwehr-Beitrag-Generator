@@ -165,7 +165,7 @@ export default {
 
       try {
         await navigator.clipboard.writeText(text);
-        this.showToast(mode === 'instagram' ? 'Text für Instagram kopiert!' : 'Text kopiert!');
+        this.showToast(mode === 'instagram' ? 'Text für Instagram kopiert! Denk daran den Link in deiner Bio einzubauen!' : 'Text kopiert!');
       } catch (err) {
         console.error('Failed to copy: ', err);
         this.showToast('Fehler beim Kopieren.');
