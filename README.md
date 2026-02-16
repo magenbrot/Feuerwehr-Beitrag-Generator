@@ -15,11 +15,13 @@ Forked from [Turbopixel](https://github.com/turbopixel/Feuerwehr-Beitrag-Generat
 
 Damit der Generator für deine Feuerwehr passt (Ortsnamen, Fahrzeuge, Tags), musst du eine Konfigurationsdatei anlegen.
 
-1.  Kopiere die Vorlage:
+1. Kopiere die Vorlage:
+
     ```sh
     cp src/config.js.dist src/config.js
     ```
-2.  Bearbeite `src/config.js` und trage deine lokalen Daten ein (Ortsnamen, Einheiten, Standard-Tags).
+
+2. Bearbeite `src/config.js` und trage deine lokalen Daten ein (Ortsnamen, Einheiten, Standard-Tags).
 
 *Hinweis: `src/config.js` wird von git ignoriert, damit deine persönlichen Einstellungen nicht versehentlich veröffentlicht werden.*
 
@@ -39,6 +41,7 @@ npm install
 ```
 
 #### 2. Konfiguration erstellen
+
 (Siehe oben unter "Konfiguration")
 
 #### 3. Projekt lokal ausführen mit hot-reload
@@ -58,25 +61,26 @@ npm run build
 ### Manuelles Bauen
 
 Wenn du das Docker-Image lokal baust, kannst du die Konfiguration auch über Build-Argumente injizieren, um eine manuelle Erstellung von `src/config.js` zu vermeiden. Zum Beispiel:
-```sh
-docker build --build-arg APP_CONFIG_BASE64=$(base64 -w 0 src/config.js) -t ffpostcreator .
 
 ```sh
-docker build -t ffpostcreator .
+docker build --build-arg APP_CONFIG_BASE64=$(base64 -w 0 src/config.js) -t ffpostcreator .
+docker run -it -p 8080:80 --rm --name ffpostcreator ffpostcreator
 ```
 
 ### GitHub Actions (CI/CD)
 
 Da die `src/config.js` nicht im Repository liegt, muss sie für den automatischen Build-Prozess via GitHub Secrets bereitgestellt werden.
 
-1.  Kodiere deine lokale `src/config.js` als Base64:
-    ```sh
-    base64 -w 0 src/config.js
-    # MacOS: base64 -b 0 src/config.js
-    ```
-2.  Gehe in deinem GitHub Repository zu **Settings** -> **Secrets and variables** -> **Actions**.
-3.  Erstelle ein neues **Repository Secret** mit dem Namen `APP_CONFIG_BASE64`.
-4.  Füge den Base64-String als Wert ein.
+1. Kodiere deine lokale `src/config.js` als Base64:
+
+   ```sh
+   base64 -w 0 src/config.js
+   # MacOS: base64 -b 0 src/config.js
+   ```
+
+2. Gehe in deinem GitHub Repository zu **Settings** -> **Secrets and variables** -> **Actions**.
+3. Erstelle ein neues **Repository Secret** mit dem Namen `APP_CONFIG_BASE64`.
+4. Füge den Base64-String als Wert ein.
 
 Der Workflow (`docker-image.yml`) prüft beim Bauen, ob dieses Secret existiert, und injiziert die Konfiguration automatisch vor dem Build. Existiert das Secret nicht, wird die Standard-Konfiguration (`src/config.js.dist`) verwendet.
 
