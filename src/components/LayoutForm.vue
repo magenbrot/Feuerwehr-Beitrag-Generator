@@ -132,11 +132,11 @@ export default {
     showToast(message) {
       this.toastMessage = message;
       this.showToastNotification = true;
-      
+
       if (this.toastTimeoutId) {
         clearTimeout(this.toastTimeoutId);
       }
-      
+
       this.toastTimeoutId = setTimeout(() => {
         this.showToastNotification = false;
         this.toastTimeoutId = null;
@@ -144,10 +144,10 @@ export default {
     },
     async copyText(mode) {
       const el = this.$refs.vorschauContent;
-      
+
       // Clone node to manipulate it without affecting view
       const clone = el.cloneNode(true);
-      
+
       // Handle Instagram specific logic
       if (mode === 'instagram') {
         clone.querySelectorAll('.hide-on-instagram').forEach(e => e.remove());
@@ -155,14 +155,14 @@ export default {
       } else {
         clone.querySelectorAll('.show-only-on-instagram').forEach(e => e.remove());
       }
-      
+
       // Temporarily append to DOM to ensure innerText works consistently
       clone.style.position = 'absolute';
       clone.style.left = '-9999px';
       document.body.appendChild(clone);
-      
+
       const text = clone.innerText;
-      
+
       try {
         await navigator.clipboard.writeText(text);
         this.showToast(mode === 'instagram' ? 'Text für Instagram kopiert!' : 'Text kopiert!');
@@ -327,10 +327,10 @@ export default {
             v-for="(zeile,zeilennummer) of bericht.split('\n')"
             v-bind:key="zeilennummer" >{{ zeile }}<br/></div>
           <div v-if="link.length > 0" class="hide-on-instagram"><br/>{{ link }}<br/></div>
-          <div v-if="link.length > 0" class="show-only-on-instagram" style="display:none;"><br/>&#x1F517; Link zum Bericht in Bio!<br/></div>
+          <div v-if="link.length > 0" class="show-only-on-instagram" style="display:none;"><br/>&#x1F517; Link zum Bericht in unserer Bio!<br/></div>
         <div><br/>{{ tags }}</div>
       </div>
-      
+
       <div class="buttons mt-4">
         <button class="button is-info" @click="copyText('all')">
           <span class="icon is-small"><i class="fas fa-copy"></i></span>
