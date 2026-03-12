@@ -57,7 +57,7 @@ export const TAG_OPTIONS = [
   '#ELW #Einsatzleitwagen',
   '#Rettungsdienst #RTW #Rettungswagen',
   '#Notarzt #NEF #Notarzteinsatzfahrzeug',
-  '#Polizei',
+  '#Polizei #PolizeiSachsen',
   '#Katastrophe #Katastrophenschutz',
   '#MANV #MANE',
   '#Betriebsmittel #Öl #Benzin #Diesel',
