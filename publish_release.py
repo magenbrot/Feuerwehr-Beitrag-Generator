@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Increments the version number in package.json and performs Git/GitHub actions.
 """
