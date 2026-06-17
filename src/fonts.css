@@ -1,0 +1,44 @@
+/* Montserrat (Variable Font) */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500 900;
+  src: url('/fonts/montserrat.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Outfit (Variable Font) */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 500 900;
+  src: url('/fonts/outfit.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Source Sans Pro - SemiBold (600) */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/fonts/source-sans-pro-600.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Source Sans Pro - Bold (700) */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/source-sans-pro-700.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Source Sans Pro - Black (900) */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 900;
+  src: url('/fonts/source-sans-pro-900.woff2') format('woff2');
+  font-display: swap;
+}

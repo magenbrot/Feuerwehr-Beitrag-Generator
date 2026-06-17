@@ -49,6 +49,12 @@ export default {
 </template>
 
 <style>
+:root {
+  --bulma-font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+html, body, button, input, select, textarea, .title, .subtitle {
+  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
 html, body{
   background: #fdfdfd;
 }
