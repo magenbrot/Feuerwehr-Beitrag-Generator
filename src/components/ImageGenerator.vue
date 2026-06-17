@@ -30,10 +30,10 @@ export default {
       fontOptions: IMAGE_FONT_OPTIONS,
       logoImageElement: null,
       logoAspectRatio: 1.0,
-      
+
       // Drag & drop state
       isDragOver: false,
-      
+
       // Interaction state
       isDragging: false,
       startX: 0,
@@ -62,7 +62,7 @@ export default {
     nummerText() { this.renderActiveCanvas(); },
     jahrText() { this.renderActiveCanvas(); },
     stichwortText() { this.renderActiveCanvas(); },
-    
+
     // Redraw canvas on style changes
     'styles.textColor'() { this.renderActiveCanvas(); },
     'styles.backgroundColor'() { this.renderActiveCanvas(); },
@@ -77,19 +77,19 @@ export default {
     'styles.position'() { this.renderActiveCanvas(); },
     'styles.logoVisible'() { this.renderActiveCanvas(); },
     'styles.logoScale'() { this.renderActiveCanvas(); },
-    
+
     textOverlayEnabled() { this.renderActiveCanvas(); },
     customTextEnabled() { this.renderActiveCanvas(); },
     customTextLine1() { this.renderActiveCanvas(); },
     customTextLine2() { this.renderActiveCanvas(); },
-    
+
     activeIndex() {
       this.renderActiveCanvas();
     }
   },
   mounted() {
     this.loadDefaultLogo();
-    
+
     // Redraw when fonts finish loading (since Google Fonts load asynchronously)
     if (document.fonts) {
       document.fonts.ready.then(() => {
@@ -116,11 +116,11 @@ export default {
       };
       img.src = this.styles.logoPath;
     },
-    
+
     handleLogoUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
-      
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
@@ -133,12 +133,12 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    
+
     resetLogo() {
       this.styles.logoPath = IMAGE_GENERATOR_DEFAULTS.logoPath;
       this.loadDefaultLogo();
     },
-    
+
     resetStyles() {
       this.styles = { ...IMAGE_GENERATOR_DEFAULTS };
       this.loadDefaultLogo();
@@ -176,7 +176,7 @@ export default {
     processFiles(files) {
       const currentCount = this.images.length;
       const availableSlots = 10 - currentCount;
-      
+
       if (availableSlots <= 0) {
         alert('Maximal 10 Bilder erlaubt.');
         return;
@@ -195,7 +195,7 @@ export default {
 
         const objectUrl = URL.createObjectURL(file);
         const imgItem = {
-          id: Date.now() + Math.random().toString(36).substr(2, 9),
+          id: Date.now() + Math.random().toString(36).slice(2, 11),
           file: file,
           name: file.name,
           url: objectUrl,
@@ -211,13 +211,13 @@ export default {
         img.onload = () => {
           imgItem.imageElement = img;
           imgItem.imgLoaded = true;
-          
+
           // Initialize crop rectangle centered to cover the smaller dimension
           const maxSize = Math.min(img.width, img.height);
           imgItem.cropSize = maxSize;
           imgItem.cropX = (img.width - maxSize) / 2;
           imgItem.cropY = (img.height - maxSize) / 2;
-          
+
           // Re-render canvas if this became the active image
           if (this.activeIndex === this.images.indexOf(imgItem)) {
             this.renderActiveCanvas();
@@ -238,7 +238,7 @@ export default {
       if (removed && removed.url) {
         URL.revokeObjectURL(removed.url);
       }
-      
+
       if (this.images.length === 0) {
         this.activeIndex = -1;
         this.clearCanvas();
@@ -272,18 +272,18 @@ export default {
     onZoomChange() {
       const imgObj = this.activeImage;
       if (!imgObj || !imgObj.imgLoaded) return;
-      
+
       const img = imgObj.imageElement;
       const maxSize = Math.min(img.width, img.height);
       const newCropSize = maxSize / imgObj.zoom;
-      
+
       const centerX = imgObj.cropX + imgObj.cropSize / 2;
       const centerY = imgObj.cropY + imgObj.cropSize / 2;
-      
+
       imgObj.cropSize = newCropSize;
       imgObj.cropX = Math.max(0, Math.min(img.width - newCropSize, centerX - newCropSize / 2));
       imgObj.cropY = Math.max(0, Math.min(img.height - newCropSize, centerY - newCropSize / 2));
-      
+
       this.renderActiveCanvas();
     },
 
@@ -295,29 +295,29 @@ export default {
       const img = imgObj.imageElement;
       const W = img.width;
       const H = img.height;
-      
+
       const canvas = this.$refs.editorCanvas;
       if (canvas.width !== W || canvas.height !== H) {
         canvas.width = W;
         canvas.height = H;
       }
-      
+
       ctx.clearRect(0, 0, W, H);
-      
+
       // 1. Draw original full image
       ctx.drawImage(img, 0, 0);
-      
+
       // 2. Draw dark overlay outside crop square
       ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
       const cx = imgObj.cropX;
       const cy = imgObj.cropY;
       const cs = imgObj.cropSize;
-      
+
       ctx.fillRect(0, 0, W, cy);
       ctx.fillRect(0, cy + cs, W, H - (cy + cs));
       ctx.fillRect(0, cy, cx, cs);
       ctx.fillRect(cx + cs, cy, W - (cx + cs), cs);
-      
+
       // 3. Draw dashed border around crop square
       ctx.strokeStyle = '#ffffff';
       const lineWidth = Math.max(3, W * 0.002);
@@ -325,12 +325,12 @@ export default {
       ctx.setLineDash([lineWidth * 3, lineWidth * 3]);
       ctx.strokeRect(cx, cy, cs, cs);
       ctx.setLineDash([]);
-      
+
       // 4. Draw overlays relative to crop square scaled down
       const scale = cs / 1080;
       const fontFamily = this.styles.fontFamily;
       const fontSize = (parseInt(this.styles.fontSize) || 48) * scale;
-      
+
       const drawTextWithOutline = (text, tx, ty, size, align = 'left') => {
         ctx.save();
         ctx.font = `bold ${size}px ${fontFamily}`;
@@ -349,12 +349,12 @@ export default {
       // Draw text overlay if it's the first image
       if (this.textOverlayEnabled && this.activeIndex === 0) {
         ctx.save();
-        
+
         if (this.styles.position === 'center-werdau') {
           ctx.textBaseline = 'middle';
           const yStart = cy + 220 * scale;
           const arrowLine = "«" + "─".repeat(14) + "»";
-          
+
           drawTextWithOutline(arrowLine, cx + 540 * scale, yStart, fontSize * 0.75, 'center');
           drawTextWithOutline("EINSATZ !", cx + 540 * scale, yStart + fontSize * 1.0, fontSize * 1.1, 'center');
           const numberYearStr = this.customTextEnabled ? this.customTextLine1 : `${this.nummerText} / ${this.jahrText}`;
@@ -367,23 +367,23 @@ export default {
           let line2 = this.customTextEnabled ? this.customTextLine2 : this.stichwortText;
           const padding = (parseInt(this.styles.padding) || 24) * scale;
           const borderWidth = (parseInt(this.styles.borderWidth) || 0) * scale;
-          
+
           ctx.font = `bold ${fontSize}px ${fontFamily}`;
           ctx.textBaseline = 'top';
-          
+
           const width1 = ctx.measureText(line1).width;
           const width2 = ctx.measureText(line2).width;
           const maxTextWidth = Math.max(width1, width2);
-          
+
           const lineSpacing = 12 * scale;
           const boxWidth = maxTextWidth + padding * 2;
           const boxHeight = fontSize * 2 + lineSpacing + padding * 2;
-          
+
           const margin = 40 * scale;
           let bx = cx + margin;
           let by = cy + margin;
           let isBanner = false;
-          
+
           if (this.styles.position === 'top-left') {
             bx = cx + margin;
             by = cy + margin;
@@ -402,7 +402,7 @@ export default {
             by = cy + cs - boxHeight;
             isBanner = true;
           }
-          
+
           ctx.fillStyle = this.hexToRgba(this.styles.backgroundColor, this.styles.backgroundOpacity);
           if (isBanner) {
             ctx.fillRect(bx, by, cs, boxHeight);
@@ -410,7 +410,7 @@ export default {
             this.drawRoundedRect(ctx, bx, by, boxWidth, boxHeight, 8 * scale);
             ctx.fill();
           }
-          
+
           if (borderWidth > 0 && this.styles.borderColor) {
             ctx.strokeStyle = this.styles.borderColor;
             ctx.lineWidth = borderWidth;
@@ -428,17 +428,17 @@ export default {
               ctx.stroke();
             }
           }
-          
+
           const tx = isBanner ? cx + cs / 2 : bx + padding;
           const ty1 = by + padding;
           const ty2 = by + padding + fontSize + lineSpacing;
-          
+
           drawTextWithOutline(line1, tx, ty1, fontSize, isBanner ? 'center' : 'left');
           drawTextWithOutline(line2, tx, ty2, fontSize, isBanner ? 'center' : 'left');
         }
         ctx.restore();
       }
-      
+
       // Draw Logo on all images
       if (this.styles.logoVisible && this.logoImageElement) {
         ctx.save();
@@ -448,7 +448,7 @@ export default {
         const margin = 40 * scale;
         const lx = cx + cs - logoW - margin;
         const ly = cy + cs - logoH - margin;
-        
+
         ctx.drawImage(this.logoImageElement, lx, ly, logoW, logoH);
         ctx.restore();
       }
@@ -457,10 +457,10 @@ export default {
     drawCroppedCanvas(ctx, imgObj, isFirstImage) {
       if (!imgObj || !imgObj.imgLoaded) return;
       const img = imgObj.imageElement;
-      
+
       // 1. Draw Cropped image scaled to 1080x1080
       ctx.drawImage(img, imgObj.cropX, imgObj.cropY, imgObj.cropSize, imgObj.cropSize, 0, 0, 1080, 1080);
-      
+
       const fontFamily = this.styles.fontFamily;
       const fontSize = parseInt(this.styles.fontSize) || 48;
 
@@ -488,14 +488,14 @@ export default {
         ctx.save();
         const padding = parseInt(this.styles.padding) || 24;
         const borderWidth = parseInt(this.styles.borderWidth) || 0;
-        
+
         ctx.font = `bold ${fontSize}px ${fontFamily}`;
 
         if (this.styles.position === 'center-werdau') {
           ctx.textBaseline = 'middle';
           const yStart = 220;
           const arrowLine = "«" + "─".repeat(14) + "»";
-          
+
           drawTextWithOutline(arrowLine, 540, yStart, fontSize * 0.75, 'center');
           drawTextWithOutline("EINSATZ !", 540, yStart + fontSize * 1.0, fontSize * 1.1, 'center');
           const numberYearStr = this.customTextEnabled ? this.customTextLine1 : `${this.nummerText} / ${this.jahrText}`;
@@ -508,16 +508,16 @@ export default {
           const width1 = ctx.measureText(line1).width;
           const width2 = ctx.measureText(line2).width;
           const maxTextWidth = Math.max(width1, width2);
-          
+
           const lineSpacing = 12;
           const boxWidth = maxTextWidth + padding * 2;
           const boxHeight = fontSize * 2 + lineSpacing + padding * 2;
-          
+
           const margin = 40;
           let bx = margin;
           let by = margin;
           let isBanner = false;
-          
+
           if (this.styles.position === 'top-left') {
             bx = margin;
             by = margin;
@@ -536,7 +536,7 @@ export default {
             by = 1080 - boxHeight;
             isBanner = true;
           }
-          
+
           ctx.fillStyle = this.hexToRgba(this.styles.backgroundColor, this.styles.backgroundOpacity);
           if (isBanner) {
             ctx.fillRect(bx, by, 1080, boxHeight);
@@ -544,7 +544,7 @@ export default {
             this.drawRoundedRect(ctx, bx, by, boxWidth, boxHeight, 8);
             ctx.fill();
           }
-          
+
           if (borderWidth > 0 && this.styles.borderColor) {
             ctx.strokeStyle = this.styles.borderColor;
             ctx.lineWidth = borderWidth;
@@ -562,15 +562,15 @@ export default {
               ctx.stroke();
             }
           }
-          
+
           const tx = isBanner ? 540 : bx + padding;
           const ty1 = by + padding;
           const ty2 = by + padding + fontSize + lineSpacing;
-          
+
           drawTextWithOutline(line1, tx, ty1, fontSize, isBanner ? 'center' : 'left');
           drawTextWithOutline(line2, tx, ty2, fontSize, isBanner ? 'center' : 'left');
         }
-        
+
         ctx.restore();
       }
 
@@ -580,11 +580,11 @@ export default {
         const scale = this.styles.logoScale || 1.0;
         const logoW = 180 * scale;
         const logoH = (180 / this.logoAspectRatio) * scale;
-        
+
         const margin = 40;
         const lx = 1080 - logoW - margin;
         const ly = 1080 - logoH - margin;
-        
+
         ctx.drawImage(this.logoImageElement, lx, ly, logoW, logoH);
         ctx.restore();
       }
@@ -597,119 +597,119 @@ export default {
       const rect = canvas.getBoundingClientRect();
       const dispX = e.clientX - rect.left;
       const dispY = e.clientY - rect.top;
-      
+
       const mouseX = dispX * (canvas.width / rect.width);
       const mouseY = dispY * (canvas.height / rect.height);
-      
+
       const imgObj = this.activeImage;
       const cx = imgObj.cropX;
       const cy = imgObj.cropY;
       const cs = imgObj.cropSize;
-      
+
       const isInside = (mouseX >= cx && mouseX <= cx + cs && mouseY >= cy && mouseY <= cy + cs);
-      
+
       if (!isInside) {
         imgObj.cropX = Math.max(0, Math.min(canvas.width - cs, mouseX - cs / 2));
         imgObj.cropY = Math.max(0, Math.min(canvas.height - cs, mouseY - cs / 2));
         this.renderActiveCanvas();
       }
-      
+
       this.isDragging = true;
       this.startX = e.clientX;
       this.startY = e.clientY;
     },
-    
+
     onMouseMove(e) {
       if (!this.isDragging || !this.activeImage) return;
       const dx = e.clientX - this.startX;
       const dy = e.clientY - this.startY;
-      
+
       const canvas = this.$refs.editorCanvas;
       const rect = canvas.getBoundingClientRect();
       const scaleFactorX = canvas.width / rect.width;
       const scaleFactorY = canvas.height / rect.height;
-      
+
       const imgObj = this.activeImage;
       imgObj.cropX += dx * scaleFactorX;
       imgObj.cropY += dy * scaleFactorY;
-      
+
       imgObj.cropX = Math.max(0, Math.min(canvas.width - imgObj.cropSize, imgObj.cropX));
       imgObj.cropY = Math.max(0, Math.min(canvas.height - imgObj.cropSize, imgObj.cropY));
-      
+
       this.startX = e.clientX;
       this.startY = e.clientY;
-      
+
       this.renderActiveCanvas();
     },
-    
+
     onMouseUpOrLeave() {
       this.isDragging = false;
     },
-    
+
     onTouchStart(e) {
       if (!this.activeImage || e.touches.length !== 1) return;
       const touch = e.touches[0];
-      
+
       const canvas = this.$refs.editorCanvas;
       const rect = canvas.getBoundingClientRect();
       const dispX = touch.clientX - rect.left;
       const dispY = touch.clientY - rect.top;
-      
+
       const mouseX = dispX * (canvas.width / rect.width);
       const mouseY = dispY * (canvas.height / rect.height);
-      
+
       const imgObj = this.activeImage;
       const cx = imgObj.cropX;
       const cy = imgObj.cropY;
       const cs = imgObj.cropSize;
-      
+
       const isInside = (mouseX >= cx && mouseX <= cx + cs && mouseY >= cy && mouseY <= cy + cs);
-      
+
       if (!isInside) {
         imgObj.cropX = Math.max(0, Math.min(canvas.width - cs, mouseX - cs / 2));
         imgObj.cropY = Math.max(0, Math.min(canvas.height - cs, mouseY - cs / 2));
         this.renderActiveCanvas();
       }
-      
+
       this.isDragging = true;
       this.startX = touch.clientX;
       this.startY = touch.clientY;
     },
-    
+
     onTouchMove(e) {
       if (!this.isDragging || !this.activeImage || e.touches.length !== 1) return;
       const touch = e.touches[0];
       const dx = touch.clientX - this.startX;
       const dy = touch.clientY - this.startY;
-      
+
       const canvas = this.$refs.editorCanvas;
       const rect = canvas.getBoundingClientRect();
       const scaleFactorX = canvas.width / rect.width;
       const scaleFactorY = canvas.height / rect.height;
-      
+
       const imgObj = this.activeImage;
       imgObj.cropX += dx * scaleFactorX;
       imgObj.cropY += dy * scaleFactorY;
-      
+
       imgObj.cropX = Math.max(0, Math.min(canvas.width - imgObj.cropSize, imgObj.cropX));
       imgObj.cropY = Math.max(0, Math.min(canvas.height - imgObj.cropSize, imgObj.cropY));
-      
+
       this.startX = touch.clientX;
       this.startY = touch.clientY;
-      
+
       this.renderActiveCanvas();
     },
-    
+
     onTouchEnd() {
       this.isDragging = false;
     },
-    
+
     onWheel(e) {
       if (!this.activeImage) return;
       e.preventDefault();
-      
+
       const zoomDelta = e.deltaY * -0.001;
-      this.activeImage.zoom = Math.min(5.0, Math.max(1.0, this.activeImage.zoom + zoomDelta));
+      this.activeImage.zoom = Math.min(3.0, Math.max(1.0, this.activeImage.zoom + zoomDelta));
       this.onZoomChange();
     },
 
@@ -743,14 +743,14 @@ export default {
 
     // Download handlers
     downloadActive() {
-      if (!this.activeImage) return;
+      if (!this.activeImage || !this.activeImage.imgLoaded) return;
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = 1080;
       tempCanvas.height = 1080;
       const tempCtx = tempCanvas.getContext('2d');
-      
+
       this.drawCroppedCanvas(tempCtx, this.activeImage, this.activeIndex === 0);
-      
+
       const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.95);
       const link = document.createElement('a');
       link.download = `Einsatz_${this.nummerText || 'Bericht'}_${this.jahrText}_${this.activeIndex + 1}.jpg`;
@@ -760,18 +760,18 @@ export default {
 
     downloadAll() {
       if (this.images.length === 0) return;
-      
+
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = 1080;
       tempCanvas.height = 1080;
       const tempCtx = tempCanvas.getContext('2d');
-      
+
       this.images.forEach((imgObj, idx) => {
         if (!imgObj.imgLoaded) return;
-        
+
         tempCtx.clearRect(0, 0, 1080, 1080);
         this.drawCroppedCanvas(tempCtx, imgObj, idx === 0);
-        
+
         const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.95);
         const link = document.createElement('a');
         link.download = `Einsatz_${this.nummerText || 'Bericht'}_${this.jahrText}_${idx + 1}.jpg`;
@@ -846,7 +846,7 @@ export default {
             @wheel="onWheel"
           ></canvas>
         </div>
-        
+
         <!-- Zoom Slider -->
         <div class="field mt-3">
           <label class="label is-small flex-label-row">
@@ -861,11 +861,11 @@ export default {
               min="1.0"
               max="3.0"
               step="0.05"
-              @input="renderActiveCanvas"
+              @input="onZoomChange"
             />
           </div>
         </div>
-        
+
         <p class="help has-text-centered has-text-grey mb-4">
           <i class="fas fa-arrows-alt"></i> Klicke und ziehe das Bild im Vorschaubereich, um den Ausschnitt zu verschieben.
         </p>
@@ -892,7 +892,7 @@ export default {
         <div class="card editor-controls-card">
           <div class="card-content py-3">
             <h4 class="title is-5 mb-3">Text-Overlay</h4>
-            
+
             <!-- Toggle Overlay -->
             <div class="field mb-3">
               <label class="checkbox has-text-weight-bold">
@@ -1009,9 +1009,9 @@ export default {
                 </div>
               </div>
             </div>
-            
+
             <hr class="my-3">
-            
+
             <h4 class="title is-5 mb-3">Logo-Overlay</h4>
             <!-- Logo Visibility -->
             <div class="field mb-3">
@@ -1020,13 +1020,13 @@ export default {
                 Logo in rechter unterer Ecke anzeigen
               </label>
             </div>
-            
+
             <div v-if="styles.logoVisible">
               <div class="field mb-3">
                 <label class="label is-small mb-1">Logo-Größe: {{ Math.round(styles.logoScale * 100) }}%</label>
                 <input type="range" class="slider-input" min="0.4" max="2.0" step="0.05" v-model.number="styles.logoScale" />
               </div>
-              
+
               <div class="field">
                 <label class="label is-small mb-1">Eigenes Logo hochladen</label>
                 <div class="file is-small is-info">
@@ -1043,9 +1043,9 @@ export default {
                 </div>
               </div>
             </div>
-            
+
             <hr class="my-3">
-            
+
             <!-- Reset Button -->
             <button class="button is-small is-danger is-outlined is-fullwidth" @click="resetStyles">
               <span class="icon"><i class="fas fa-undo"></i></span>
