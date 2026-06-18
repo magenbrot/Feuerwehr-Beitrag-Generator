@@ -90,3 +90,12 @@ export const IMAGE_FONT_OPTIONS = [
   { label: 'Impact (Bold)', value: 'Impact, sans-serif' },
   { label: 'Monospace', value: 'monospace' }
 ];
+
+export const TEMPLATE_IMAGES = [
+  { name: 'Brandeinsatz', path: '/templates/brand.png' },
+  { name: 'Technische Hilfeleistung', path: '/templates/hilfeleistung.png' },
+  { name: 'Verkehrsunfall', path: '/templates/verkehrsunfall.png' },
+  { name: 'Ölspur', path: '/templates/oelspur.png' },
+  { name: 'Fehlalarm', path: '/templates/fehlalarm.png' },
+  { name: 'Allgemein', path: '/templates/allgemein.png' }
+];
