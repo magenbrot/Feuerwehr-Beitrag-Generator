@@ -1,5 +1,4 @@
 <script>
-import moment from 'moment';
 import {
   DEFAULT_TAGS,
   DEFAULT_EINHEITEN,
@@ -45,10 +44,9 @@ export default {
   watch: {
     datum(newDateValue) {
       if (newDateValue) {
-        const m = moment(newDateValue, "YYYY-MM-DD");
-
-        if (m.isValid()) {
-          this.jahr = m.year();
+        const parts = newDateValue.split('-');
+        if (parts.length === 3 && parts[0].length === 4 && !isNaN(parts[0])) {
+          this.jahr = parseInt(parts[0], 10);
         } else {
           this.jahr = '';
         }
@@ -60,21 +58,39 @@ export default {
   methods: {
     format_date(value) {
       if (value) {
-        return moment(String(value)).format('DD.MM.YYYY')
+        const parts = String(value).split('-');
+        if (parts.length === 3) {
+          return `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+        return value;
       }
     },
     set_stichwort(val) {
       this.stichwort = val;
     },
     set_heute() {
-      const now = moment();
-      this.datum = now.format("YYYY-MM-DD");
-      this.uhrzeit = now.format("HH:mm");
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      this.datum = `${yyyy}-${mm}-${dd}`;
+      this.uhrzeit = `${hh}:${min}`;
     },
     set_gestern() {
-      const yesterday = moment().subtract(1, "days");
-      this.datum = yesterday.format("YYYY-MM-DD");
-      this.uhrzeit = moment().format("HH:mm");
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yyyy = yesterday.getFullYear();
+      const mm = String(yesterday.getMonth() + 1).padStart(2, '0');
+      const dd = String(yesterday.getDate()).padStart(2, '0');
+
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+
+      this.datum = `${yyyy}-${mm}-${dd}`;
+      this.uhrzeit = `${hh}:${min}`;
     },
     set_dauer(val) {
       this.dauer = val;
@@ -105,11 +121,15 @@ export default {
       this.tags = DEFAULT_TAGS;
     },
     create_example() {
-      const now = moment();
+      const now = new Date();
       this.nummer = "42";
-      this.datum = now.startOf('month').format("YYYY-MM-DD");
-      this.jahr = now.format("YYYY");
-      this.uhrzeit = now.format("HH:mm");
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      this.datum = `${yyyy}-${mm}-01`;
+      this.jahr = String(yyyy);
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      this.uhrzeit = `${hh}:${min}`;
       this.dauer = "1 Stunde";
       this.stichwort = "TMR-1 Türnotöffnung";
       this.ort = `${DEFAULT_ORT}, Bertolt-Brecht-Straße 18`;
