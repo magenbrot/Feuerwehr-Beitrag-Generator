@@ -984,6 +984,8 @@ export default {
             multiple
             accept="image/*"
             class="is-hidden"
+            id="image-file-input"
+            name="image-file-input"
             @change="onFileChange"
           />
           <div class="has-text-centered py-4">
@@ -1077,6 +1079,8 @@ export default {
               min="1.0"
               max="3.0"
               step="0.05"
+              id="image-zoom-slider"
+              name="image-zoom-slider"
               @input="onZoomChange"
             />
           </div>
@@ -1112,7 +1116,7 @@ export default {
             <!-- Toggle Overlay -->
             <div class="field mb-3">
               <label class="checkbox has-text-weight-bold">
-                <input type="checkbox" v-model="textOverlayEnabled" />
+                <input type="checkbox" v-model="textOverlayEnabled" id="text-overlay-enabled" name="text-overlay-enabled" />
                 Text-Overlay anzeigen
               </label>
             </div>
@@ -1120,7 +1124,7 @@ export default {
             <!-- Toggle Symbolfoto -->
             <div class="field mb-3" v-if="activeImage">
               <label class="checkbox has-text-weight-bold">
-                <input type="checkbox" v-model="activeImage.isSymbolfoto" @change="renderActiveCanvas" />
+                <input type="checkbox" v-model="activeImage.isSymbolfoto" id="active-image-symbolfoto" name="active-image-symbolfoto" @change="renderActiveCanvas" />
                 Als Symbolfoto kennzeichnen (Hinweis im Bild anzeigen)
               </label>
             </div>
@@ -1129,7 +1133,7 @@ export default {
               <!-- Custom Text toggle -->
               <div class="field mb-3">
                 <label class="checkbox is-size-7">
-                  <input type="checkbox" v-model="customTextEnabled" />
+                  <input type="checkbox" v-model="customTextEnabled" id="custom-text-enabled" name="custom-text-enabled" />
                   Text manuell überschreiben (statt Einsatzdaten)
                 </label>
               </div>
@@ -1139,13 +1143,13 @@ export default {
                 <div class="field mb-2">
                   <label class="label is-small">Zeile 1</label>
                   <div class="control">
-                    <input type="text" class="input is-small" v-model="customTextLine1" placeholder="z.B. Einsatz 54 / 2026" />
+                    <input type="text" class="input is-small" v-model="customTextLine1" id="custom-text-line1" name="custom-text-line1" placeholder="z.B. Einsatz 54 / 2026" />
                   </div>
                 </div>
                 <div class="field">
                   <label class="label is-small">Zeile 2</label>
                   <div class="control">
-                    <input type="text" class="input is-small" v-model="customTextLine2" placeholder="z.B. TH-0 Ölspur" />
+                    <input type="text" class="input is-small" v-model="customTextLine2" id="custom-text-line2" name="custom-text-line2" placeholder="z.B. TH-0 Ölspur" />
                   </div>
                 </div>
               </div>
@@ -1155,7 +1159,7 @@ export default {
                 <div class="column is-6 pr-2 mb-2">
                   <label class="label is-small mb-1">Textfarbe</label>
                   <div class="color-picker-wrapper">
-                    <input type="color" v-model="styles.textColor" />
+                    <input type="color" v-model="styles.textColor" id="styles-text-color" name="styles-text-color" />
                     <span class="is-size-7 ml-1">{{ styles.textColor }}</span>
                   </div>
                 </div>
@@ -1164,47 +1168,47 @@ export default {
                   <div class="column is-6 pl-2 mb-2">
                     <label class="label is-small mb-1">Hintergrund</label>
                     <div class="color-picker-wrapper">
-                      <input type="color" v-model="styles.backgroundColor" />
+                      <input type="color" v-model="styles.backgroundColor" id="styles-background-color" name="styles-background-color" />
                       <span class="is-size-7 ml-1">{{ styles.backgroundColor }}</span>
                     </div>
                   </div>
                   <!-- Background Opacity -->
                   <div class="column is-12 mb-3">
                     <label class="label is-small mb-1">Hintergrund-Deckkraft: {{ Math.round(styles.backgroundOpacity * 100) }}%</label>
-                    <input type="range" class="slider-input" min="0" max="1" step="0.05" v-model.number="styles.backgroundOpacity" />
+                    <input type="range" class="slider-input" min="0" max="1" step="0.05" v-model.number="styles.backgroundOpacity" id="styles-background-opacity" name="styles-background-opacity" />
                   </div>
                   <!-- Border Color -->
                   <div class="column is-6 pr-2 mb-2">
                     <label class="label is-small mb-1">Rahmenfarbe</label>
                     <div class="color-picker-wrapper">
-                      <input type="color" v-model="styles.borderColor" />
+                      <input type="color" v-model="styles.borderColor" id="styles-border-color" name="styles-border-color" />
                       <span class="is-size-7 ml-1">{{ styles.borderColor }}</span>
                     </div>
                   </div>
                   <!-- Border Width -->
                   <div class="column is-6 pl-2 mb-2">
                     <label class="label is-small mb-1">Rahmenstärke: {{ styles.borderWidth }}px</label>
-                    <input type="range" class="slider-input" min="0" max="30" step="1" v-model.number="styles.borderWidth" />
+                    <input type="range" class="slider-input" min="0" max="30" step="1" v-model.number="styles.borderWidth" id="styles-border-width" name="styles-border-width" />
                   </div>
                 </template>
                 <!-- Text Outline Color -->
                 <div class="column is-6 pr-2 mb-2">
                   <label class="label is-small mb-1">Umrandungsfarbe</label>
                   <div class="color-picker-wrapper">
-                    <input type="color" v-model="styles.textOutlineColor" />
+                    <input type="color" v-model="styles.textOutlineColor" id="styles-text-outline-color" name="styles-text-outline-color" />
                     <span class="is-size-7 ml-1">{{ styles.textOutlineColor }}</span>
                   </div>
                 </div>
                 <!-- Text Outline Width -->
                 <div class="column is-6 pl-2 mb-2">
                   <label class="label is-small mb-1">Umrandungsstärke: {{ styles.textOutlineWidth }}px</label>
-                  <input type="range" class="slider-input" min="0" max="30" step="1" v-model.number="styles.textOutlineWidth" />
+                  <input type="range" class="slider-input" min="0" max="30" step="1" v-model.number="styles.textOutlineWidth" id="styles-text-outline-width" name="styles-text-outline-width" />
                 </div>
                 <!-- Font Family -->
                 <div class="column is-12 mb-3">
                   <label class="label is-small mb-1">Schriftart</label>
                   <div class="select is-small is-fullwidth">
-                    <select v-model="styles.fontFamily">
+                    <select v-model="styles.fontFamily" id="styles-font-family" name="styles-font-family">
                       <option v-for="f in fontOptions" :key="f.value" :value="f.value">{{ f.label }}</option>
                     </select>
                   </div>
@@ -1212,20 +1216,20 @@ export default {
                 <!-- Font Size -->
                 <div class="column is-6 pr-2 mb-3">
                   <label class="label is-small mb-1">Schriftgröße: {{ styles.fontSize }}px</label>
-                  <input type="range" class="slider-input" min="24" max="64" step="1" v-model.number="styles.fontSize" />
+                  <input type="range" class="slider-input" min="24" max="64" step="1" v-model.number="styles.fontSize" id="styles-font-size" name="styles-font-size" />
                 </div>
                 <template v-if="styles.position !== 'center-werdau'">
                   <!-- Padding -->
                   <div class="column is-6 pl-2 mb-3">
                     <label class="label is-small mb-1">Abstand innen: {{ styles.padding }}px</label>
-                    <input type="range" class="slider-input" min="10" max="60" step="1" v-model.number="styles.padding" />
+                    <input type="range" class="slider-input" min="10" max="60" step="1" v-model.number="styles.padding" id="styles-padding" name="styles-padding" />
                   </div>
                 </template>
                 <!-- Position -->
                 <div class="column is-12 mb-3">
                   <label class="label is-small mb-1">Position des Text-Overlays</label>
                   <div class="select is-small is-fullwidth">
-                    <select v-model="styles.position">
+                    <select v-model="styles.position" id="styles-position" name="styles-position">
                       <option value="center-werdau">Werdau Design (Zentriert mit Pfeilen)</option>
                       <option value="top-left">Ecke oben links (Floating)</option>
                       <option value="top-right">Ecke oben rechts (Floating)</option>
@@ -1244,22 +1248,21 @@ export default {
             <!-- Logo Visibility -->
             <div class="field mb-3">
               <label class="checkbox">
-                <input type="checkbox" v-model="styles.logoVisible" />
+                <input type="checkbox" v-model="styles.logoVisible" id="styles-logo-visible" name="styles-logo-visible" />
                 Logo in rechter unterer Ecke anzeigen
               </label>
             </div>
-
             <div v-if="styles.logoVisible">
               <div class="field mb-3">
                 <label class="label is-small mb-1">Logo-Größe: {{ Math.round(styles.logoScale * 100) }}%</label>
-                <input type="range" class="slider-input" min="0.4" max="2.0" step="0.05" v-model.number="styles.logoScale" />
+                <input type="range" class="slider-input" min="0.4" max="2.0" step="0.05" v-model.number="styles.logoScale" id="styles-logo-scale" name="styles-logo-scale" />
               </div>
 
               <div class="field">
                 <label class="label is-small mb-1">Eigenes Logo hochladen</label>
                 <div class="file is-small is-info">
                   <label class="file-label">
-                    <input class="file-input" type="file" accept="image/*" @change="handleLogoUpload">
+                    <input class="file-input" type="file" accept="image/*" id="logo-upload-input" name="logo-upload-input" @change="handleLogoUpload">
                     <span class="file-cta">
                       <span class="file-icon"><i class="fas fa-upload"></i></span>
                       <span class="file-label">Logo auswählen…</span>

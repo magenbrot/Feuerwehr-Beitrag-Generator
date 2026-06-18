@@ -239,11 +239,11 @@ export default {
           <div class="grid">
             <div class="cell is-col-start-1">
               <label for="nummer" class="label">Nummer <span class="tag is-primary is-clickable" @click="nummer++">+1</span></label>
-              <input type="text" class="input" v-model="nummer" id="nummer">
+              <input type="text" class="input" v-model="nummer" id="nummer" name="nummer">
             </div>
             <div class="cell is-col-span-4">
               <label for="stichwort" class="label">Stichwort</label>
-              <input type="text" class="input" v-model="stichwort" id="stichwort">
+              <input type="text" class="input" v-model="stichwort" id="stichwort" name="stichwort">
               <div class="help">
                 <div class="tags">
                   <span
@@ -257,7 +257,7 @@ export default {
             </div>
             <div class="cell is-col-start-1">
               <label for="datum" class="label">Datum</label>
-              <input type="date" v-model="datum" class="input" id="datum">
+              <input type="date" v-model="datum" class="input" id="datum" name="datum">
               <div class="help">
                 <div class="tags">
                   <span class="tag is-clickable" @click="set_heute">Heute</span>
@@ -267,11 +267,11 @@ export default {
             </div>
             <div class="cell">
               <label for="uhrzeit" class="label">Uhrzeit</label>
-              <input type="time" v-model="uhrzeit" class="input" id="uhrzeit">
+              <input type="time" v-model="uhrzeit" class="input" id="uhrzeit" name="uhrzeit">
             </div>
             <div class="cell is-col-span-3">
               <label for="dauer" class="label">Einsatzdauer</label>
-              <input type="text" v-model="dauer" class="input" id="dauer">
+              <input type="text" v-model="dauer" class="input" id="dauer" name="dauer">
               <div class="help">
                 <div class="tags">
                   <span
@@ -285,7 +285,7 @@ export default {
             </div>
             <div class="cell is-col-span-2 is-col-start-1">
               <label for="ort" class="label">Ort</label>
-              <input type="text" class="input" v-model="ort" id="ort">
+              <input type="text" class="input" v-model="ort" id="ort" name="ort">
               <div class="help">
                 <div class="tags">
                   <span
@@ -299,7 +299,7 @@ export default {
             </div>
             <div class="cell is-col-span-3">
               <label for="einheiten" class="label">Einheiten vor Ort <span class="tag is-primary is-clickable" @click="reset_einheiten">Reset</span></label>
-              <input type="text" class="input" v-model="einheiten" id="einheiten">
+              <input type="text" class="input" v-model="einheiten" id="einheiten" name="einheiten">
               <div class="help">
                 <div class="tags">
                   <span
@@ -328,7 +328,7 @@ export default {
 
             <div class="cell is-col-start-1 is-col-span-5">
               <label for="tags" class="label">Tags <span class="tag is-primary is-clickable" @click="reset_tags">Reset</span></label>
-              <input type="text" class="input" v-model="tags" id="tags">
+              <input type="text" class="input" v-model="tags" id="tags" name="tags">
               <div class="help">
                 <div class="tags">
                   <span
