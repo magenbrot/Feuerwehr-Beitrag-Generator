@@ -64,3 +64,29 @@ export const TAG_OPTIONS = [
   '#Baum #Kettensäge #Motorkettensäge',
   '#Umwelt #Umweltschutz'
 ];
+
+export const IMAGE_GENERATOR_DEFAULTS = {
+  textColor: '#ccff00', // Lime green
+  backgroundColor: '#000000',
+  backgroundOpacity: 0.0, // Transparent background box
+  borderColor: '#000000',
+  borderWidth: 0,
+  textOutlineColor: '#000000', // Black outline around text characters
+  textOutlineWidth: 6, // Thickness of outline
+  fontFamily: '"Source Sans Pro", sans-serif',
+  fontSize: 48,
+  padding: 24,
+  position: 'center-werdau', // New Werdau layout default
+  logoVisible: true,
+  logoScale: 1.1,
+  logoPath: '/FF-Werdau-logo-transparent.png'
+};
+
+export const IMAGE_FONT_OPTIONS = [
+  { label: 'Source Sans Pro (Standard)', value: '"Source Sans Pro", sans-serif' },
+  { label: 'Montserrat (Premium)', value: 'Montserrat, sans-serif' },
+  { label: 'Outfit (Premium)', value: 'Outfit, sans-serif' },
+  { label: 'Arial (Standard)', value: 'Arial, sans-serif' },
+  { label: 'Impact (Bold)', value: 'Impact, sans-serif' },
+  { label: 'Monospace', value: 'monospace' }
+];
