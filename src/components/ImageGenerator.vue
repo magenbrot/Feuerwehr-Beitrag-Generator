@@ -1,5 +1,5 @@
 <script>
-import { IMAGE_GENERATOR_DEFAULTS, IMAGE_FONT_OPTIONS } from '../config.js';
+import { IMAGE_GENERATOR_DEFAULTS, IMAGE_FONT_OPTIONS, TEMPLATE_IMAGES } from '../config.js';
 
 export default {
   name: 'ImageGenerator',
@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       IMAGE_GENERATOR_DEFAULTS,
+      templateImages: TEMPLATE_IMAGES,
       images: [],
       activeIndex: -1,
       textOverlayEnabled: true,
@@ -100,7 +101,7 @@ export default {
   beforeUnmount() {
     // Revoke all object URLs to prevent memory leaks
     this.images.forEach(img => {
-      if (img.url) URL.revokeObjectURL(img.url);
+      if (img.url && img.url.startsWith('blob:')) URL.revokeObjectURL(img.url);
     });
   },
   methods: {
@@ -233,9 +234,52 @@ export default {
       }
     },
 
+    selectSymbolImage(template) {
+      const hasTemplateAtFirst = this.images.length > 0 && this.images[0].isTemplate;
+      if (!hasTemplateAtFirst && this.images.length >= 10) {
+        alert('Maximal 10 Bilder erlaubt. Bitte löschen Sie ein Bild, bevor Sie ein Symbolbild hinzufügen.');
+        return;
+      }
+
+      const imgItem = {
+        id: 'template-' + Date.now() + Math.random().toString(36).slice(2, 11),
+        file: null,
+        name: template.name,
+        url: template.path,
+        isTemplate: true,
+        zoom: 1.0,
+        cropX: 0,
+        cropY: 0,
+        cropSize: 0,
+        imageElement: null,
+        imgLoaded: false
+      };
+
+      const img = new Image();
+      img.onload = () => {
+        imgItem.imageElement = img;
+        imgItem.imgLoaded = true;
+
+        const maxSize = Math.min(img.width, img.height);
+        imgItem.cropSize = maxSize;
+        imgItem.cropX = (img.width - maxSize) / 2;
+        imgItem.cropY = (img.height - maxSize) / 2;
+
+        if (hasTemplateAtFirst) {
+          this.images[0] = imgItem;
+        } else {
+          this.images.unshift(imgItem);
+        }
+
+        this.activeIndex = 0;
+        this.renderActiveCanvas();
+      };
+      img.src = template.path;
+    },
+
     removeImage(index) {
       const removed = this.images.splice(index, 1)[0];
-      if (removed && removed.url) {
+      if (removed && removed.url && removed.url.startsWith('blob:')) {
         URL.revokeObjectURL(removed.url);
       }
 
@@ -785,29 +829,65 @@ export default {
 
 <template>
   <div class="image-generator">
-    <!-- Dropzone / Image Uploader -->
-    <div
-      class="upload-box mb-4"
-      :class="{ 'is-dragover': isDragOver }"
-      @dragover="onDragOver"
-      @dragleave="onDragLeave"
-      @drop="onDrop"
-      @click="triggerFileInput"
-    >
-      <input
-        type="file"
-        ref="fileInput"
-        multiple
-        accept="image/*"
-        class="is-hidden"
-        @change="onFileChange"
-      />
-      <div class="has-text-centered py-4">
-        <span class="icon is-large has-text-grey-light">
-          <i class="fas fa-cloud-upload-alt fa-2x"></i>
-        </span>
-        <p class="has-text-weight-semibold">Bilder per Drag & Drop hierher ziehen oder klicken</p>
-        <p class="is-size-7 has-text-grey">Maximal 10 Bilder insgesamt ({{ images.length }}/10)</p>
+    <!-- Top Area: Upload & Symbolbilder -->
+    <div class="columns is-desktop mb-4">
+      <!-- Left: Dropzone / Image Uploader -->
+      <div class="column is-8-desktop">
+        <div
+          class="upload-box"
+          :class="{ 'is-dragover': isDragOver }"
+          @dragover="onDragOver"
+          @dragleave="onDragLeave"
+          @drop="onDrop"
+          @click="triggerFileInput"
+          style="height: 100%; display: flex; align-items: center; justify-content: center;"
+        >
+          <input
+            type="file"
+            ref="fileInput"
+            multiple
+            accept="image/*"
+            class="is-hidden"
+            @change="onFileChange"
+          />
+          <div class="has-text-centered py-4">
+            <span class="icon is-large has-text-grey-light">
+              <i class="fas fa-cloud-upload-alt fa-2x"></i>
+            </span>
+            <p class="has-text-weight-semibold">Bilder per Drag & Drop hierher ziehen oder klicken</p>
+            <p class="is-size-7 has-text-grey">Maximal 10 Bilder insgesamt ({{ images.length }}/10)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Symbolbilder selection -->
+      <div class="column is-4-desktop">
+        <div class="card symbolbilder-card" style="height: 100%;">
+          <div class="card-content py-3">
+            <h4 class="title is-6 mb-3 flex-label-row">
+              <span>Symbolbilder</span>
+              <span class="tag is-light is-rounded">{{ templateImages.length }} Bilder</span>
+            </h4>
+            <div class="symbol-grid-container">
+              <div class="symbol-grid">
+                <div
+                  v-for="tpl in templateImages"
+                  :key="tpl.path"
+                  class="symbol-item"
+                  @click="selectSymbolImage(tpl)"
+                  :title="tpl.name"
+                >
+                  <div class="symbol-img-wrapper">
+                    <img :src="tpl.path" :alt="tpl.name" />
+                  </div>
+                  <div class="symbol-name is-size-7 has-text-centered px-1 py-1">
+                    {{ tpl.name }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1183,5 +1263,66 @@ export default {
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   border: 1px solid #f0f0f0;
   border-radius: 8px;
+}
+
+.symbolbilder-card {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.symbol-grid-container {
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid #eef2f3;
+  border-radius: 6px;
+  padding: 8px;
+  background-color: #ffffff;
+}
+
+.symbol-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  gap: 8px;
+}
+
+.symbol-item {
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #ffffff;
+  transition: all 0.2s ease-in-out;
+}
+
+.symbol-item:hover {
+  border-color: #e63946;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.symbol-img-wrapper {
+  height: 55px;
+  background-color: #f5f5f5;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.symbol-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.symbol-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.65rem !important;
+  color: #4a4a4a;
+  font-weight: 600;
 }
 </style>
