@@ -392,6 +392,38 @@ export default {
         ctx.restore();
       };
 
+      const drawArrowLine = (xCenter, y, w, size) => {
+        const path = new Path2D();
+        path.moveTo(xCenter - w/2, y);
+        path.lineTo(xCenter + w/2, y);
+
+        path.moveTo(xCenter - w/2 + size, y - size);
+        path.lineTo(xCenter - w/2, y);
+        path.lineTo(xCenter - w/2 + size, y + size);
+
+        path.moveTo(xCenter + w/2 - size, y - size);
+        path.lineTo(xCenter + w/2, y);
+        path.lineTo(xCenter + w/2 - size, y + size);
+
+        ctx.save();
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        const mainLineWidth = 6 * scale;
+        const outlineWidth = (parseInt(this.styles.textOutlineWidth) || 0) * scale;
+
+        if (outlineWidth > 0 && this.styles.textOutlineColor) {
+          ctx.lineWidth = mainLineWidth + outlineWidth * 2;
+          ctx.strokeStyle = this.styles.textOutlineColor;
+          ctx.stroke(path);
+        }
+
+        ctx.lineWidth = mainLineWidth;
+        ctx.strokeStyle = this.styles.textColor;
+        ctx.stroke(path);
+        ctx.restore();
+      };
+
       // Draw text overlay if it's the first image
       if (this.textOverlayEnabled && this.activeIndex === 0) {
         ctx.save();
@@ -399,15 +431,14 @@ export default {
         if (this.styles.position === 'center-werdau') {
           ctx.textBaseline = 'middle';
           const yStart = cy + 220 * scale;
-          const arrowLine = "«" + "─".repeat(14) + "»";
 
-          drawTextWithOutline(arrowLine, cx + 540 * scale, yStart, fontSize * 0.75, 'center');
+          drawArrowLine(cx + 540 * scale, yStart, 500 * scale, 15 * scale);
           drawTextWithOutline("EINSATZ !", cx + 540 * scale, yStart + fontSize * 1.0, fontSize * 1.1, 'center');
           const numberYearStr = this.customTextEnabled ? this.customTextLine1 : `${this.nummerText} / ${this.jahrText}`;
           drawTextWithOutline(numberYearStr.toUpperCase(), cx + 540 * scale, yStart + fontSize * 2.3, fontSize * 1.45, 'center');
           const stichwortStr = this.customTextEnabled ? this.customTextLine2 : this.stichwortText;
           drawTextWithOutline(stichwortStr.toUpperCase(), cx + 540 * scale, yStart + fontSize * 3.4, fontSize * 0.55, 'center');
-          drawTextWithOutline(arrowLine, cx + 540 * scale, yStart + fontSize * 4.1, fontSize * 0.75, 'center');
+          drawArrowLine(cx + 540 * scale, yStart + fontSize * 4.1, 500 * scale, 15 * scale);
         } else {
           let line1 = this.customTextEnabled ? this.customTextLine1 : `Einsatz ${this.nummerText} / ${this.jahrText}`;
           let line2 = this.customTextEnabled ? this.customTextLine2 : this.stichwortText;
@@ -560,6 +591,38 @@ export default {
         ctx.restore();
       };
 
+      const drawArrowLine = (xCenter, y, w, size) => {
+        const path = new Path2D();
+        path.moveTo(xCenter - w/2, y);
+        path.lineTo(xCenter + w/2, y);
+
+        path.moveTo(xCenter - w/2 + size, y - size);
+        path.lineTo(xCenter - w/2, y);
+        path.lineTo(xCenter - w/2 + size, y + size);
+
+        path.moveTo(xCenter + w/2 - size, y - size);
+        path.lineTo(xCenter + w/2, y);
+        path.lineTo(xCenter + w/2 - size, y + size);
+
+        ctx.save();
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        const mainLineWidth = 6;
+        const outlineWidth = parseInt(this.styles.textOutlineWidth) || 0;
+
+        if (outlineWidth > 0 && this.styles.textOutlineColor) {
+          ctx.lineWidth = mainLineWidth + outlineWidth * 2;
+          ctx.strokeStyle = this.styles.textOutlineColor;
+          ctx.stroke(path);
+        }
+
+        ctx.lineWidth = mainLineWidth;
+        ctx.strokeStyle = this.styles.textColor;
+        ctx.stroke(path);
+        ctx.restore();
+      };
+
       // 2. Draw Text Overlay
       if (this.textOverlayEnabled && isFirstImage) {
         let line1 = this.customTextEnabled ? this.customTextLine1 : `Einsatz ${this.nummerText} / ${this.jahrText}`;
@@ -574,15 +637,14 @@ export default {
         if (this.styles.position === 'center-werdau') {
           ctx.textBaseline = 'middle';
           const yStart = 220;
-          const arrowLine = "«" + "─".repeat(14) + "»";
 
-          drawTextWithOutline(arrowLine, 540, yStart, fontSize * 0.75, 'center');
+          drawArrowLine(540, yStart, 500, 15);
           drawTextWithOutline("EINSATZ !", 540, yStart + fontSize * 1.0, fontSize * 1.1, 'center');
           const numberYearStr = this.customTextEnabled ? this.customTextLine1 : `${this.nummerText} / ${this.jahrText}`;
           drawTextWithOutline(numberYearStr.toUpperCase(), 540, yStart + fontSize * 2.3, fontSize * 1.45, 'center');
           const stichwortStr = this.customTextEnabled ? this.customTextLine2 : this.stichwortText;
           drawTextWithOutline(stichwortStr.toUpperCase(), 540, yStart + fontSize * 3.4, fontSize * 0.55, 'center');
-          drawTextWithOutline(arrowLine, 540, yStart + fontSize * 4.1, fontSize * 0.75, 'center');
+          drawArrowLine(540, yStart + fontSize * 4.1, 500, 15);
         } else {
           ctx.textBaseline = 'top';
           const width1 = ctx.measureText(line1).width;
