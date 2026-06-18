@@ -417,7 +417,7 @@ export default {
         const outlineWidth = (parseInt(this.styles.textOutlineWidth) || 0) * scale;
 
         if (outlineWidth > 0 && this.styles.textOutlineColor) {
-          ctx.lineWidth = mainLineWidth + outlineWidth * 2;
+          ctx.lineWidth = mainLineWidth + outlineWidth;
           ctx.strokeStyle = this.styles.textOutlineColor;
           ctx.stroke(path);
         }
@@ -616,7 +616,7 @@ export default {
         const outlineWidth = parseInt(this.styles.textOutlineWidth) || 0;
 
         if (outlineWidth > 0 && this.styles.textOutlineColor) {
-          ctx.lineWidth = mainLineWidth + outlineWidth * 2;
+          ctx.lineWidth = mainLineWidth + outlineWidth;
           ctx.strokeStyle = this.styles.textOutlineColor;
           ctx.stroke(path);
         }
