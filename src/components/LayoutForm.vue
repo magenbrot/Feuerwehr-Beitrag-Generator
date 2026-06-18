@@ -313,7 +313,7 @@ export default {
             </div>
             <div class="cell is-col-start-1 is-col-span-5">
               <label for="bericht" class="label">Einsatzbericht <span class="tag is-primary is-clickable" @click="reset_einsatzbericht">Reset</span></label>
-              <textarea class="textarea" rows="3" v-model="bericht" name="bericht"></textarea>
+              <textarea class="textarea" rows="3" v-model="bericht" name="bericht" id="bericht"></textarea>
               <div class="help">
                 <div class="tags">
                   <span
@@ -342,7 +342,7 @@ export default {
             </div>
             <div class="cell is-col-start-1 is-col-span-5">
               <label for="link" class="label">Link zum Beitrag</label>
-              <input type="text" class="input" v-model="link" name="link"/>
+              <input type="text" class="input" v-model="link" name="link" id="link"/>
             </div>
           </div>
           <div class="buttons mt-4">

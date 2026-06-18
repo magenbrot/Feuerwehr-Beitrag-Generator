@@ -222,7 +222,9 @@ export default {
 
           // Re-render canvas if this became the active image
           if (this.activeIndex === this.images.indexOf(imgItem)) {
-            this.renderActiveCanvas();
+            this.$nextTick(() => {
+              this.renderActiveCanvas();
+            });
           }
         };
         img.src = objectUrl;
@@ -274,7 +276,9 @@ export default {
         }
 
         this.activeIndex = 0;
-        this.renderActiveCanvas();
+        this.$nextTick(() => {
+          this.renderActiveCanvas();
+        });
       };
       img.src = template.path;
     },
