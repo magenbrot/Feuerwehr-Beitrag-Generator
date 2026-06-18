@@ -205,7 +205,8 @@ export default {
           cropY: 0,
           cropSize: 0,
           imageElement: null,
-          imgLoaded: false
+          imgLoaded: false,
+          isSymbolfoto: false
         };
 
         const img = new Image();
@@ -247,6 +248,7 @@ export default {
         name: template.name,
         url: template.path,
         isTemplate: true,
+        isSymbolfoto: true,
         zoom: 1.0,
         cropX: 0,
         cropY: 0,
@@ -266,7 +268,7 @@ export default {
         imgItem.cropY = (img.height - maxSize) / 2;
 
         if (hasTemplateAtFirst) {
-          this.images[0] = imgItem;
+          this.images.splice(0, 1, imgItem);
         } else {
           this.images.unshift(imgItem);
         }
@@ -496,6 +498,40 @@ export default {
         ctx.drawImage(this.logoImageElement, lx, ly, logoW, logoH);
         ctx.restore();
       }
+
+      // Draw "Symbolfoto" badge if enabled
+      if (imgObj.isSymbolfoto) {
+        ctx.save();
+        const badgeText = "SYMBOLBILD";
+        const badgeFontSize = 24 * scale;
+        ctx.font = `bold ${badgeFontSize}px ${fontFamily}`;
+
+        const paddingX = 16 * scale;
+        const paddingY = 8 * scale;
+        const textWidth = ctx.measureText(badgeText).width;
+
+        const badgeW = textWidth + paddingX * 2;
+        const badgeH = badgeFontSize + paddingY * 2;
+
+        let bx;
+        const margin = 40 * scale;
+        if (this.styles.position === 'top-right' || this.styles.position === 'top-banner') {
+          bx = cx + margin;
+        } else {
+          bx = cx + cs - badgeW - margin;
+        }
+        const by = cy + margin;
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        this.drawRoundedRect(ctx, bx, by, badgeW, badgeH, 4 * scale);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'top';
+        ctx.textAlign = 'left';
+        ctx.fillText(badgeText, bx + paddingX, by + paddingY);
+        ctx.restore();
+      }
     },
 
     drawCroppedCanvas(ctx, imgObj, isFirstImage) {
@@ -630,6 +666,40 @@ export default {
         const ly = 1080 - logoH - margin;
 
         ctx.drawImage(this.logoImageElement, lx, ly, logoW, logoH);
+        ctx.restore();
+      }
+
+      // 4. Draw "Symbolfoto" badge if enabled
+      if (imgObj.isSymbolfoto) {
+        ctx.save();
+        const badgeText = "SYMBOLBILD";
+        const badgeFontSize = 24;
+        ctx.font = `bold ${badgeFontSize}px ${fontFamily}`;
+
+        const paddingX = 16;
+        const paddingY = 8;
+        const textWidth = ctx.measureText(badgeText).width;
+
+        const badgeW = textWidth + paddingX * 2;
+        const badgeH = badgeFontSize + paddingY * 2;
+
+        let bx;
+        const margin = 40;
+        if (this.styles.position === 'top-right' || this.styles.position === 'top-banner') {
+          bx = margin;
+        } else {
+          bx = 1080 - badgeW - margin;
+        }
+        const by = margin;
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        this.drawRoundedRect(ctx, bx, by, badgeW, badgeH, 4);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'top';
+        ctx.textAlign = 'left';
+        ctx.fillText(badgeText, bx + paddingX, by + paddingY);
         ctx.restore();
       }
     },
@@ -981,6 +1051,14 @@ export default {
               </label>
             </div>
 
+            <!-- Toggle Symbolfoto -->
+            <div class="field mb-3" v-if="activeImage">
+              <label class="checkbox has-text-weight-bold">
+                <input type="checkbox" v-model="activeImage.isSymbolfoto" @change="renderActiveCanvas" />
+                Als Symbolfoto kennzeichnen (Hinweis im Bild anzeigen)
+              </label>
+            </div>
+
             <div v-if="textOverlayEnabled">
               <!-- Custom Text toggle -->
               <div class="field mb-3">
@@ -1015,32 +1093,34 @@ export default {
                     <span class="is-size-7 ml-1">{{ styles.textColor }}</span>
                   </div>
                 </div>
-                <!-- Background Color -->
-                <div class="column is-6 pl-2 mb-2">
-                  <label class="label is-small mb-1">Hintergrund</label>
-                  <div class="color-picker-wrapper">
-                    <input type="color" v-model="styles.backgroundColor" />
-                    <span class="is-size-7 ml-1">{{ styles.backgroundColor }}</span>
+                <template v-if="styles.position !== 'center-werdau'">
+                  <!-- Background Color -->
+                  <div class="column is-6 pl-2 mb-2">
+                    <label class="label is-small mb-1">Hintergrund</label>
+                    <div class="color-picker-wrapper">
+                      <input type="color" v-model="styles.backgroundColor" />
+                      <span class="is-size-7 ml-1">{{ styles.backgroundColor }}</span>
+                    </div>
                   </div>
-                </div>
-                <!-- Background Opacity -->
-                <div class="column is-12 mb-3">
-                  <label class="label is-small mb-1">Hintergrund-Deckkraft: {{ Math.round(styles.backgroundOpacity * 100) }}%</label>
-                  <input type="range" class="slider-input" min="0" max="1" step="0.05" v-model.number="styles.backgroundOpacity" />
-                </div>
-                <!-- Border Color -->
-                <div class="column is-6 pr-2 mb-2">
-                  <label class="label is-small mb-1">Rahmenfarbe</label>
-                  <div class="color-picker-wrapper">
-                    <input type="color" v-model="styles.borderColor" />
-                    <span class="is-size-7 ml-1">{{ styles.borderColor }}</span>
+                  <!-- Background Opacity -->
+                  <div class="column is-12 mb-3">
+                    <label class="label is-small mb-1">Hintergrund-Deckkraft: {{ Math.round(styles.backgroundOpacity * 100) }}%</label>
+                    <input type="range" class="slider-input" min="0" max="1" step="0.05" v-model.number="styles.backgroundOpacity" />
                   </div>
-                </div>
-                <!-- Border Width -->
-                <div class="column is-6 pl-2 mb-2">
-                  <label class="label is-small mb-1">Rahmenstärke: {{ styles.borderWidth }}px</label>
-                  <input type="range" class="slider-input" min="0" max="15" step="1" v-model.number="styles.borderWidth" />
-                </div>
+                  <!-- Border Color -->
+                  <div class="column is-6 pr-2 mb-2">
+                    <label class="label is-small mb-1">Rahmenfarbe</label>
+                    <div class="color-picker-wrapper">
+                      <input type="color" v-model="styles.borderColor" />
+                      <span class="is-size-7 ml-1">{{ styles.borderColor }}</span>
+                    </div>
+                  </div>
+                  <!-- Border Width -->
+                  <div class="column is-6 pl-2 mb-2">
+                    <label class="label is-small mb-1">Rahmenstärke: {{ styles.borderWidth }}px</label>
+                    <input type="range" class="slider-input" min="0" max="30" step="1" v-model.number="styles.borderWidth" />
+                  </div>
+                </template>
                 <!-- Text Outline Color -->
                 <div class="column is-6 pr-2 mb-2">
                   <label class="label is-small mb-1">Umrandungsfarbe</label>
@@ -1052,7 +1132,7 @@ export default {
                 <!-- Text Outline Width -->
                 <div class="column is-6 pl-2 mb-2">
                   <label class="label is-small mb-1">Umrandungsstärke: {{ styles.textOutlineWidth }}px</label>
-                  <input type="range" class="slider-input" min="0" max="15" step="1" v-model.number="styles.textOutlineWidth" />
+                  <input type="range" class="slider-input" min="0" max="30" step="1" v-model.number="styles.textOutlineWidth" />
                 </div>
                 <!-- Font Family -->
                 <div class="column is-12 mb-3">
@@ -1068,11 +1148,13 @@ export default {
                   <label class="label is-small mb-1">Schriftgröße: {{ styles.fontSize }}px</label>
                   <input type="range" class="slider-input" min="24" max="64" step="1" v-model.number="styles.fontSize" />
                 </div>
-                <!-- Padding -->
-                <div class="column is-6 pl-2 mb-3">
-                  <label class="label is-small mb-1">Abstand innen: {{ styles.padding }}px</label>
-                  <input type="range" class="slider-input" min="10" max="60" step="1" v-model.number="styles.padding" />
-                </div>
+                <template v-if="styles.position !== 'center-werdau'">
+                  <!-- Padding -->
+                  <div class="column is-6 pl-2 mb-3">
+                    <label class="label is-small mb-1">Abstand innen: {{ styles.padding }}px</label>
+                    <input type="range" class="slider-input" min="10" max="60" step="1" v-model.number="styles.padding" />
+                  </div>
+                </template>
                 <!-- Position -->
                 <div class="column is-12 mb-3">
                   <label class="label is-small mb-1">Position des Text-Overlays</label>
