@@ -12,6 +12,7 @@ Requires: gh CLI authenticated with GITHUB_TOKEN (set as GH_TOKEN env var).
 import json
 import datetime
 import os
+import re
 import subprocess
 import sys
 
@@ -87,6 +88,25 @@ def main():
         data['version'] = new_version
         with open(FILE_PATH, 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=2)
+
+        # Step 3b: Bump service worker cache version
+        sw_path = 'public/sw.js'
+        if os.path.exists(sw_path):
+            with open(sw_path, 'r', encoding='utf-8') as file:
+                sw_content = file.read()
+            sw_content = sw_content.replace(
+                f"'fw-post-{old_version}'",
+                f"'fw-post-{new_version}'"
+            )
+            # Also handle manual bumps like fw-post-v1 → fw-post-<version>
+            sw_content = re.sub(
+                r"'fw-post-(?:v\d+|[\d.]+)'",
+                f"'fw-post-{new_version}'",
+                sw_content
+            )
+            with open(sw_path, 'w', encoding='utf-8') as file:
+                file.write(sw_content)
+            run_command(['git', 'add', sw_path], f"Staging {sw_path}")
 
         # Step 4: Commit and push the version bump
         run_command(['git', 'add', FILE_PATH], f"Staging {FILE_PATH}")
