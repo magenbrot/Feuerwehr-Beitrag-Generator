@@ -106,8 +106,7 @@ Beim ersten Start kopiert der Container die Standard-Assets (Logo + Symbolfotos)
 1. Container starten — das `media/` Verzeichnis wird automatisch befüllt
 2. Eigene Dateien ablegen:
    - `media/logo.png` — Eigenes Logo (transparentes PNG)
-   - `media/templates/brand.png` — Eigenes Brand-Symbolfoto
-   - `media/templates/*.png` — Weitere Symbolfotos (Dateinamen beibehalten oder `config.js` anpassen)
-3. Container neu starten — fertig
+   - `media/templates/` — Symbolfotos ablegen (PNG, JPG, WEBP, GIF)
+3. Container neu starten — das Manifest wird automatisch neu generiert
 
-Die Symbolfotos und das Logo sind nicht mehr fest im Image eingepackt, sondern liegen als Dateien im Volume und können jederzeit ausgetauscht werden.
+Die Symbolfotos und das Logo sind nicht mehr fest im Image eingepackt, sondern liegen als Dateien im Volume und können jederzeit ausgetauscht werden. Der Dateiname (ohne Endung) wird automatisch als Beschreibungstext unter dem Bild angezeigt.

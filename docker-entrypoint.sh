@@ -15,4 +15,28 @@ else
     echo "Media already present, skipping seed."
 fi
 
+# Generate templates manifest (JSON list of available template images)
+TEMPLATES_DIR="${MEDIA_DIR}/templates"
+MANIFEST="${TEMPLATES_DIR}/manifest.json"
+
+if [ -d "${TEMPLATES_DIR}" ]; then
+    echo "[" > "${MANIFEST}"
+    first=1
+    for filepath in "${TEMPLATES_DIR}"/*.{png,jpg,jpeg,webp,gif,PNG,JPG,JPEG,WEBP,GIF}; do
+        [ -f "$filepath" ] || continue
+        filename=$(basename "$filepath")
+        name="${filename%.*}"
+        path="/media/templates/${filename}"
+        if [ $first -eq 1 ]; then
+            printf '  {"name": "%s", "path": "%s"}' "$name" "$path" >> "${MANIFEST}"
+            first=0
+        else
+            printf ',\n  {"name": "%s", "path": "%s"}' "$name" "$path" >> "${MANIFEST}"
+        fi
+    done
+    echo "" >> "${MANIFEST}"
+    echo "]" >> "${MANIFEST}"
+    echo "Generated templates manifest: ${MANIFEST}"
+fi
+
 exec nginx -g 'daemon off;'
