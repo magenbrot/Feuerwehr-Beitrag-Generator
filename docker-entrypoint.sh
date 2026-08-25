@@ -15,32 +15,41 @@ else
     echo "Media already present, skipping seed."
 fi
 
-# Generate templates manifest (JSON list of available template images)
+# Generate templates manifest (valid JSON array of template images)
+# Strategy: collect entries separated by newlines, then transform to JSON
 TEMPLATES_DIR="${MEDIA_DIR}/templates"
 MANIFEST="${TEMPLATES_DIR}/manifest.json"
 
 if [ -d "${TEMPLATES_DIR}" ]; then
-    MANIFEST_ENTRIES=""
+    TMPFILE="$(mktemp)"
+
     for ext in png jpg jpeg webp gif PNG JPG JPEG WEBP GIF; do
         for filepath in "${TEMPLATES_DIR}"/*.${ext}; do
             [ -f "$filepath" ] || continue
             filename=$(basename "$filepath")
             name="${filename%.*}"
             path="/media/templates/${filename}"
-            if [ -z "$MANIFEST_ENTRIES" ]; then
-                MANIFEST_ENTRIES="  {\"name\": \"$name\", \"path\": \"$path\"}"
-            else
-                MANIFEST_ENTRIES="$MANIFEST_ENTRIES
-  {\"name\": \"$name\", \"path\": \"$path\"}"
-            fi
+            printf '{"name":"%s","path":"%s"}\n' "$name" "$path" >> "$TMPFILE"
         done
     done
 
-    if [ -n "$MANIFEST_ENTRIES" ]; then
-        printf '[\n%s\n]\n' "$MANIFEST_ENTRIES" > "${MANIFEST}"
+    LINE_COUNT=$(wc -l < "$TMPFILE" | tr -d ' ')
+    if [ "$LINE_COUNT" -gt 0 ]; then
+        printf '[' > "${MANIFEST}"
+        LINE_NUM=0
+        while IFS= read -r line; do
+            LINE_NUM=$((LINE_NUM + 1))
+            if [ "$LINE_NUM" -eq 1 ]; then
+                printf '\n  %s' "$line" >> "${MANIFEST}"
+            else
+                printf ',\n  %s' "$line" >> "${MANIFEST}"
+            fi
+        done < "$TMPFILE"
+        printf '\n]\n' >> "${MANIFEST}"
     else
-        echo "[]" > "${MANIFEST}"
+        printf '[]\n' > "${MANIFEST}"
     fi
+    rm -f "$TMPFILE"
     echo "Generated templates manifest: ${MANIFEST}"
 fi
 
