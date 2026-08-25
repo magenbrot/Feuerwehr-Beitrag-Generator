@@ -117,13 +117,12 @@ def main():
             "Merging PR"
         )
 
-        # Step 6: Switch back to main and sync with remote (avoid merge commits)
+        # Step 6: Switch back to main and pull latest (fast-forward, no merge commits)
         run_command(['git', 'checkout', MAIN_BRANCH], "Switching to main")
-        run_command(['git', 'reset', '--hard', f'origin/{MAIN_BRANCH}'], "Syncing with remote main")
+        run_command(['git', 'pull', 'origin', MAIN_BRANCH], "Pulling latest from remote")
 
-        # Step 7: Fetch remote, tag the merge commit, push tag
-        run_command(['git', 'fetch', 'origin'], "Fetching remote")
-        run_command(['git', 'tag', tag_name, f'origin/{MAIN_BRANCH}'], f"Creating tag {tag_name} on remote main")
+        # Step 7: Tag the current HEAD (= merge commit from remote)
+        run_command(['git', 'tag', tag_name], f"Creating tag {tag_name}")
         run_command(['git', 'push', 'origin', tag_name], f"Pushing tag {tag_name}")
 
         # Step 8: Create GitHub release (triggers docker-image.yml)
