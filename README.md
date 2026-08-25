@@ -93,5 +93,21 @@ services:
     container_name: ffpostcreator
     ports:
       - 8095:80
+    volumes:
+      # Mount your custom assets here. On first start, default assets
+      # (logo.png + template images) are copied into this directory.
+      # Replace the files to customize logo and symbol images.
+      - ./assets:/usr/share/nginx/html/assets
     restart: unless-stopped
 ```
+
+Beim ersten Start kopiert der Container die Standard-Assets (Logo + Symbolfotos) in das `./assets` Verzeichnis. Um sie anzupassen:
+
+1. Container starten — das `assets/` Verzeichnis wird automatisch befüllt
+2. Eigene Dateien ablegen:
+   - `assets/logo.png` — Eigenes Logo (transparentes PNG)
+   - `assets/templates/brand.png` — Eigenes Brand-Symbolfoto
+   - `assets/templates/*.png` — Weitere Symbolfotos (Dateinamen beibehalten oder `config.js` anpassen)
+3. Container neu starten — fertig
+
+Die Symbolfotos und das Logo sind nicht mehr fest im Image eingepackt, sondern liegen als Dateien im Volume und können jederzeit ausgetauscht werden.

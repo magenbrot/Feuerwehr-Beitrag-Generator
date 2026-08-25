@@ -8,14 +8,14 @@
 📟 TMR-1 Türnotöffnung
 ⏰ 01.10.2024 15:01
 ⌛ 1 Stunde
-🌍 Werdau, Bertolt-Brecht-Straße 18
-🚒 FF Werdau, Rettungsdienst, Polizei
+🌍 Musterstadt, Beispielstraße 1
+🚒 FF Musterstadt, Rettungsdienst, Polizei
 
 Das ist ein Beispiel Einsatzbericht.
 
-https://www.feuerwehr-werdau.de/
+https://www.feuerwehr-musterstadt.de/
 
-#feuerwehr #einsatzbericht #einsatzinfo #firefighter #ehrenamt #werdau #landkreiszwickau #leitstelle #112</pre>
+#feuerwehr #einsatzbericht #einsatzinfo #firefighter #ehrenamt #leitstelle #112</pre>
   </div>
 </template>
 

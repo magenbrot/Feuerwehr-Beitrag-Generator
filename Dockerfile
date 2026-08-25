@@ -15,8 +15,17 @@ RUN npm run build
 FROM nginx:mainline-alpine AS production-stage
 
 RUN rm -rf /usr/share/nginx/html/*
+
+# Copy built app
 COPY --from=build-stage /ffpostcreator/dist /usr/share/nginx/html
+
+# Copy default assets to /defaults (used to seed the volume on first run)
+COPY --from=build-stage /ffpostcreator/dist/assets /defaults
+
+# Entrypoint script seeds the volume on first start
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
