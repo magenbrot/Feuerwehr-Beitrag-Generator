@@ -1230,7 +1230,7 @@ export default {
                   <label class="label is-small mb-1">Position des Text-Overlays</label>
                   <div class="select is-small is-fullwidth">
                     <select v-model="styles.position" id="styles-position" name="styles-position">
-                      <option value="center-werdau">Design 2 (Zentriert mit Pfeilen)</option>
+                      <option value="center-werdau">Zentriert mit Pfeilen</option>
                       <option value="top-left">Ecke oben links (Floating)</option>
                       <option value="top-right">Ecke oben rechts (Floating)</option>
                       <option value="bottom-left">Ecke unten links (Floating)</option>
