@@ -1,6 +1,6 @@
 // sw.js - Service Worker für Offline-Support
 // Cache version — bump on each release to force cache invalidation
-const CACHE_NAME = 'fw-post-2026.08.08';
+const CACHE_NAME = 'fw-post-2026.08.09';
 const urlsToCache = [
   '/',
   '/index.html',
