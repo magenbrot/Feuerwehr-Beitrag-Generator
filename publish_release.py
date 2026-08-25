@@ -79,20 +79,21 @@ def main():
 
         print(f"Old version: {old_version} -> New version: {new_version}")
 
-        # Step 2: Update version in package.json
+        # Step 2: Create release branch FIRST (before modifying anything)
+        branch_name = f"release/{new_version}"
+        run_command(['git', 'checkout', '-b', branch_name], f"Creating branch {branch_name}")
+
+        # Step 3: Update version in package.json
         data['version'] = new_version
         with open(FILE_PATH, 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=2)
 
-        # Step 3: Create branch, commit, push
-        branch_name = f"release/{new_version}"
-
+        # Step 4: Commit and push the version bump
         run_command(['git', 'add', FILE_PATH], f"Staging {FILE_PATH}")
         run_command(['git', 'commit', '-m', f'Release {new_version}'], "Creating commit")
-        run_command(['git', 'checkout', '-b', branch_name], f"Creating branch {branch_name}")
         run_command(['git', 'push', 'origin', branch_name], f"Pushing branch {branch_name}")
 
-        # Step 4: Create PR
+        # Step 5: Create PR
         pr_result = run_command(
             ['gh', 'pr', 'create',
              '--repo', REPO_NAME,
@@ -116,12 +117,13 @@ def main():
             "Merging PR"
         )
 
-        # Step 6: Switch back to main, pull the merge
+        # Step 6: Switch back to main and sync with remote (avoid merge commits)
         run_command(['git', 'checkout', MAIN_BRANCH], "Switching to main")
-        run_command(['git', 'pull', 'origin', MAIN_BRANCH], "Pulling merged changes")
+        run_command(['git', 'reset', '--hard', f'origin/{MAIN_BRANCH}'], "Syncing with remote main")
 
-        # Step 7: Create tag on the merge commit
-        run_command(['git', 'tag', tag_name], f"Creating tag {tag_name}")
+        # Step 7: Fetch remote, tag the merge commit, push tag
+        run_command(['git', 'fetch', 'origin'], "Fetching remote")
+        run_command(['git', 'tag', tag_name, f'origin/{MAIN_BRANCH}'], f"Creating tag {tag_name} on remote main")
         run_command(['git', 'push', 'origin', tag_name], f"Pushing tag {tag_name}")
 
         # Step 8: Create GitHub release (triggers docker-image.yml)
