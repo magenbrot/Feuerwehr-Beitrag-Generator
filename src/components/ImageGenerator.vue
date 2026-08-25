@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       IMAGE_GENERATOR_DEFAULTS,
-      templateImages: TEMPLATE_IMAGES,
+      templateImages: [...TEMPLATE_IMAGES],
       images: [],
       activeIndex: -1,
       textOverlayEnabled: true,
@@ -88,8 +88,21 @@ export default {
       this.renderActiveCanvas();
     }
   },
-  mounted() {
+  async mounted() {
     this.loadDefaultLogo();
+
+    // Load template images dynamically from manifest (Docker deployment)
+    try {
+      const resp = await fetch('/media/templates/manifest.json');
+      if (resp.ok) {
+        const manifest = await resp.json();
+        if (Array.isArray(manifest) && manifest.length > 0) {
+          this.templateImages = manifest;
+        }
+      }
+    } catch (e) {
+      // Manifest not available (dev mode) — keep static TEMPLATE_IMAGES from config
+    }
 
     // Redraw when fonts finish loading (since Google Fonts load asynchronously)
     if (document.fonts) {
