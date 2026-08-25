@@ -19,8 +19,8 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy built app
 COPY --from=build-stage /ffpostcreator/dist /usr/share/nginx/html
 
-# Copy default assets to /defaults (used to seed the volume on first run)
-COPY --from=build-stage /ffpostcreator/dist/assets /defaults
+# Copy default media (logo + templates) to /defaults for volume seeding
+COPY --from=build-stage /ffpostcreator/dist/media /defaults
 
 # Entrypoint script seeds the volume on first start
 COPY docker-entrypoint.sh /docker-entrypoint.sh

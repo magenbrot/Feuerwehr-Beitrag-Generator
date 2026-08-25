@@ -5,8 +5,8 @@ services:
     ports:
       - 8095:80
     volumes:
-      # Mount your custom assets here. On first start, default assets
+      # Mount your custom media here. On first start, default assets
       # (logo.png + template images) are copied into this directory.
       # Replace the files to customize logo and symbol images.
-      - ./assets:/usr/share/nginx/html/assets
+      - ./media:/usr/share/nginx/html/media
     restart: unless-stopped
