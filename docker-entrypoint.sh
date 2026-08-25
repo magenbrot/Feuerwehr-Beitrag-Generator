@@ -20,22 +20,27 @@ TEMPLATES_DIR="${MEDIA_DIR}/templates"
 MANIFEST="${TEMPLATES_DIR}/manifest.json"
 
 if [ -d "${TEMPLATES_DIR}" ]; then
-    echo "[" > "${MANIFEST}"
-    first=1
-    for filepath in "${TEMPLATES_DIR}"/*.{png,jpg,jpeg,webp,gif,PNG,JPG,JPEG,WEBP,GIF}; do
-        [ -f "$filepath" ] || continue
-        filename=$(basename "$filepath")
-        name="${filename%.*}"
-        path="/media/templates/${filename}"
-        if [ $first -eq 1 ]; then
-            printf '  {"name": "%s", "path": "%s"}' "$name" "$path" >> "${MANIFEST}"
-            first=0
-        else
-            printf ',\n  {"name": "%s", "path": "%s"}' "$name" "$path" >> "${MANIFEST}"
-        fi
+    MANIFEST_ENTRIES=""
+    for ext in png jpg jpeg webp gif PNG JPG JPEG WEBP GIF; do
+        for filepath in "${TEMPLATES_DIR}"/*.${ext}; do
+            [ -f "$filepath" ] || continue
+            filename=$(basename "$filepath")
+            name="${filename%.*}"
+            path="/media/templates/${filename}"
+            if [ -z "$MANIFEST_ENTRIES" ]; then
+                MANIFEST_ENTRIES="  {\"name\": \"$name\", \"path\": \"$path\"}"
+            else
+                MANIFEST_ENTRIES="$MANIFEST_ENTRIES
+  {\"name\": \"$name\", \"path\": \"$path\"}"
+            fi
+        done
     done
-    echo "" >> "${MANIFEST}"
-    echo "]" >> "${MANIFEST}"
+
+    if [ -n "$MANIFEST_ENTRIES" ]; then
+        printf '[\n%s\n]\n' "$MANIFEST_ENTRIES" > "${MANIFEST}"
+    else
+        echo "[]" > "${MANIFEST}"
+    fi
     echo "Generated templates manifest: ${MANIFEST}"
 fi
 
