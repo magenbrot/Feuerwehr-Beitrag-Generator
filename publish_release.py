@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
-Increments the version number in package.json and performs Git/GitHub actions.
+Increments the version number in package.json, creates a PR, merges it,
+tags the merge commit, and creates a GitHub release.
+
+Designed to run inside GitHub Actions (workflow_dispatch triggered via
+`gh workflow run release.yml`).
+
+Requires: gh CLI authenticated with GITHUB_TOKEN (set as GH_TOKEN env var).
 """
 
 import json
@@ -51,52 +57,83 @@ def run_command(command, description):
     print("   [OK]")
     if result.stdout:
         print(f"   Stdout:\n{result.stdout.strip()}")
-
-
-def update_manifest():
-    """
-    Reads the manifest, calculates the new version, and writes it back.
-    """
-    if not os.path.exists(FILE_PATH):
-        print(f"Error: {FILE_PATH} not found.")
-        sys.exit(1)
-
-    with open(FILE_PATH, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-
-    old_version = data.get('version', '0.0.0')
-    new_version = get_new_version(old_version)
-
-    print(f"Old version: {old_version} -> New version: {new_version}")
-
-    data['version'] = new_version
-    with open(FILE_PATH, 'w', encoding='utf-8') as file:
-        json.dump(data, file, indent=2)
-
-    return new_version
+    return result
 
 
 def main():
     """
-    Main orchestration of the version update process.
+    Main orchestration: version bump → branch → PR → merge → tag → release.
     """
     try:
-        new_version = update_manifest()
+        # Step 1: Calculate new version
+        if not os.path.exists(FILE_PATH):
+            print(f"Error: {FILE_PATH} not found.")
+            sys.exit(1)
+
+        with open(FILE_PATH, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+
+        old_version = data.get('version', '0.0.0')
+        new_version = get_new_version(old_version)
         tag_name = new_version
 
-        commands = [
-            (['git', 'add', FILE_PATH], f"Staging {FILE_PATH}"),
-            (['git', 'commit', '-m', f'Update version to {new_version}'], "Creating commit"),
-            (['git', 'tag', tag_name], f"Creating tag {tag_name}"),
-            (['git', 'push', '--atomic', 'origin', MAIN_BRANCH, tag_name], "Pushing to origin"),
-            (['gh', 'release', 'create', tag_name, f'--repo={REPO_NAME}',
-              f'--title=Feuerwehr-Beitrag-Generator {tag_name}', '--generate-notes'], "Creating GitHub release")
-        ]
+        print(f"Old version: {old_version} -> New version: {new_version}")
 
-        for cmd, desc in commands:
-            run_command(cmd, desc)
+        # Step 2: Update version in package.json
+        data['version'] = new_version
+        with open(FILE_PATH, 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent=2)
 
-        print("\n" + "="*50 + "\nProcess finished successfully!\n" + "="*50)
+        # Step 3: Create branch, commit, push
+        branch_name = f"release/{new_version}"
+
+        run_command(['git', 'add', FILE_PATH], f"Staging {FILE_PATH}")
+        run_command(['git', 'commit', '-m', f'Release {new_version}'], "Creating commit")
+        run_command(['git', 'checkout', '-b', branch_name], f"Creating branch {branch_name}")
+        run_command(['git', 'push', 'origin', branch_name], f"Pushing branch {branch_name}")
+
+        # Step 4: Create PR
+        pr_result = run_command(
+            ['gh', 'pr', 'create',
+             '--repo', REPO_NAME,
+             '--base', MAIN_BRANCH,
+             '--head', branch_name,
+             '--title', f'Release {new_version}',
+             '--body', f'Automated version bump to {new_version}'],
+            "Creating PR"
+        )
+
+        # Extract PR number from gh output
+        pr_number = pr_result.stdout.strip().split('/')[-1]
+        print(f"   PR number: {pr_number}")
+
+        # Step 5: Merge PR (squash to keep history clean)
+        run_command(
+            ['gh', 'pr', 'merge', pr_number,
+             '--repo', REPO_NAME,
+             '--squash',
+             '--delete-branch'],
+            "Merging PR"
+        )
+
+        # Step 6: Switch back to main, pull the merge
+        run_command(['git', 'checkout', MAIN_BRANCH], "Switching to main")
+        run_command(['git', 'pull', 'origin', MAIN_BRANCH], "Pulling merged changes")
+
+        # Step 7: Create tag on the merge commit
+        run_command(['git', 'tag', tag_name], f"Creating tag {tag_name}")
+        run_command(['git', 'push', 'origin', tag_name], f"Pushing tag {tag_name}")
+
+        # Step 8: Create GitHub release (triggers docker-image.yml)
+        run_command(
+            ['gh', 'release', 'create', tag_name,
+             '--repo', REPO_NAME,
+             f'--title=Feuerwehr-Beitrag-Generator {tag_name}',
+             '--generate-notes'],
+            "Creating GitHub release"
+        )
+
+        print("\n" + "="*50 + "\nRelease published successfully!\n" + "="*50)
 
     except subprocess.CalledProcessError as err:
         print(f"\nCommand failed: {err.stderr}")
