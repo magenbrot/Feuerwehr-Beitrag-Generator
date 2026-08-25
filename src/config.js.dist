@@ -79,7 +79,7 @@ export const IMAGE_GENERATOR_DEFAULTS = {
   position: 'center-werdau', // Centered layout with arrows
   logoVisible: true,
   logoScale: 1.1,
-  logoPath: '/assets/logo.png'
+  logoPath: '/media/logo.png'
 };
 
 export const IMAGE_FONT_OPTIONS = [
@@ -92,10 +92,10 @@ export const IMAGE_FONT_OPTIONS = [
 ];
 
 export const TEMPLATE_IMAGES = [
-  { name: 'Brandeinsatz', path: '/assets/templates/brand.png' },
-  { name: 'Technische Hilfeleistung', path: '/assets/templates/hilfeleistung.png' },
-  { name: 'Verkehrsunfall', path: '/assets/templates/verkehrsunfall.png' },
-  { name: 'Ölspur', path: '/assets/templates/oelspur.png' },
-  { name: 'Fehlalarm', path: '/assets/templates/fehlalarm.png' },
-  { name: 'Allgemein', path: '/assets/templates/allgemein.png' }
+  { name: 'Brandeinsatz', path: '/media/templates/brand.png' },
+  { name: 'Technische Hilfeleistung', path: '/media/templates/hilfeleistung.png' },
+  { name: 'Verkehrsunfall', path: '/media/templates/verkehrsunfall.png' },
+  { name: 'Ölspur', path: '/media/templates/oelspur.png' },
+  { name: 'Fehlalarm', path: '/media/templates/fehlalarm.png' },
+  { name: 'Allgemein', path: '/media/templates/allgemein.png' }
 ];
