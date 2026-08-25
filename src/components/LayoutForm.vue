@@ -136,7 +136,7 @@ export default {
       this.einheiten = `${DEFAULT_EINHEITEN}, Rettungsdienst, Polizei`;
       this.bericht = 'Das ist ein Beispiel Einsatzbericht.';
       this.tags = DEFAULT_TAGS;
-      this.link = 'https://www.feuerwehr-werdau.de/';
+      this.link = 'https://www.feuerwehr-musterstadt.de/';
     },
     clear_form() {
       this.nummer = '';

@@ -1,0 +1,12 @@
+services:
+  ffpostcreator:
+    image: ghcr.io/magenbrot/feuerwehr-beitrag-generator:latest
+    container_name: ffpostcreator
+    ports:
+      - 8095:80
+    volumes:
+      # Mount your custom assets here. On first start, default assets
+      # (logo.png + template images) are copied into this directory.
+      # Replace the files to customize logo and symbol images.
+      - ./assets:/usr/share/nginx/html/assets
+    restart: unless-stopped
