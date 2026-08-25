@@ -12,6 +12,7 @@ Requires: gh CLI authenticated with GITHUB_TOKEN (set as GH_TOKEN env var).
 import json
 import datetime
 import os
+import re
 import subprocess
 import sys
 
@@ -98,8 +99,7 @@ def main():
                 f"'fw-post-{new_version}'"
             )
             # Also handle manual bumps like fw-post-v1 → fw-post-<version>
-            import re as _re
-            sw_content = _re.sub(
+            sw_content = re.sub(
                 r"'fw-post-(?:v\d+|[\d.]+)'",
                 f"'fw-post-{new_version}'",
                 sw_content
